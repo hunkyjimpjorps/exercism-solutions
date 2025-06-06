@@ -5,7 +5,7 @@ defmodule RPNCalculator do
 
   def calculate(stack, operation) do
     try do
-      {:ok, operation.(stack)}
+      operation.(stack)
     rescue
       err in _ -> :error
     end
@@ -13,7 +13,7 @@ defmodule RPNCalculator do
 
   def calculate_verbose(stack, operation) do
     try do
-      {:ok, operation.(stack)}
+      operation.(stack)
     rescue
       err in _ -> {:error, err.message}
     end
