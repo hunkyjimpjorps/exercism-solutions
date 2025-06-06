@@ -3,9 +3,11 @@
 open System.Text.RegularExpressions
 
 let valid (number: string) =
-    not (Regex.IsMatch(number, "[^0-9\s]"))
-    && Regex.Replace(number, " ", "").Length > 1
-    && 0 = (number
+    let numberTrimmed = Regex.Replace(number, " ", "")
+
+    not (Regex.IsMatch(numberTrimmed, "[^0-9]"))
+    && numberTrimmed.Length > 1
+    && 0 = (numberTrimmed
             |> fun n -> Regex.Replace(n, " ", "")
             |> Seq.rev
             |> Seq.map (string >> int)
