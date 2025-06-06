@@ -1,4 +1,7 @@
 ﻿module TwoFer
 
-let twoFer (input: string option) : string =
-    $"""One for {Option.defaultValue "you" input}, one for me."""
+let twoFer input =
+    match input with
+    | None -> "you"
+    | Some name -> name
+    |> sprintf "One for %s, one for me."
