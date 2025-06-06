@@ -38,7 +38,7 @@ defmodule RationalNumbers do
   """
   @spec abs(a :: rational) :: rational
   def abs({n, d}) do
-    {Kernel.abs(n), Kernel.abs(d)}
+    reduce({Kernel.abs(n), Kernel.abs(d)})
   end
 
   @doc """
