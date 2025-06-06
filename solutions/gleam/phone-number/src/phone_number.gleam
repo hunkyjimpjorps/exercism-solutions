@@ -50,17 +50,17 @@ fn contains_no_other_symbols(input: String) -> Result(String, String) {
 }
 
 fn area_code_is_valid(input: String) -> Result(String, String) {
-  case input {
-    "0" <> _ -> Error("area code cannot start with zero")
-    "1" <> _ -> Error("area code cannot start with one")
+  case string.slice(from: input, at_index: 0, length: 1) {
+    "0" -> Error("area code cannot start with zero")
+    "1" -> Error("area code cannot start with one")
     _ -> Ok(input)
   }
 }
 
 fn exchange_code_is_valid(input: String) -> Result(String, String) {
-  case string.drop_left(from: input, up_to: 3) {
-    "0" <> _ -> Error("exchange code cannot start with zero")
-    "1" <> _ -> Error("exchange code cannot start with one")
+  case string.slice(from: input, at_index: 3, length: 1) {
+    "0" -> Error("exchange code cannot start with zero")
+    "1" -> Error("exchange code cannot start with one")
     _ -> Ok(input)
   }
 }
