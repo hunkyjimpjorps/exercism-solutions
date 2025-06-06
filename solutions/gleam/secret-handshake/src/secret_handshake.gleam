@@ -20,7 +20,7 @@ pub fn commands(encoded_message: Int) -> List(Command) {
     let #(bit, com) = p
     case bit {
       1 -> Ok(com)
-      0 -> Error(Nil)
+      _ -> Error(Nil)
     }
   })
   |> fn(commands) {
