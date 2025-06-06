@@ -20,14 +20,12 @@ defmodule ResistorColorTrio do
   def label(colors) do
     colors
     |> Enum.map(fn c -> @colors[c] end)
-    |> compute()
+    |> (fn [tens, ones, power] ->
+          (tens * 10 + ones) * Integer.pow(10, power)
+        end).()
     |> (fn
           r when r > 1000 -> {r / 1000, :kiloohms}
           r -> {r, :ohms}
         end).()
-  end
-
-  defp compute([tens, ones, power]) do
-    (tens * 10 + ones) * Integer.pow(10, power)
   end
 end
