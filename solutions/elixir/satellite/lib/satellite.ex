@@ -9,11 +9,12 @@ defmodule Satellite do
   """
   @spec build_tree(preorder :: [any], inorder :: [any]) :: {:ok, tree} | {:error, String.t()}
 
+  def build_tree(preorder, inorder) when length(preorder) != length(inorder) do
+    {:error, "traversals must have the same length"}
+  end
+
   def build_tree(preorder, inorder) do
     cond do
-      length(preorder) != length(inorder) ->
-        {:error, "traversals must have the same length"}
-
       Enum.uniq(preorder) != preorder or Enum.uniq(inorder) != inorder ->
         {:error, "traversals must contain unique items"}
 
@@ -26,10 +27,13 @@ defmodule Satellite do
   end
 
   defp do_build_tree([], []), do: {}
+  defp do_build_tree([root], [root]), do: {{}, root, {}}
 
   defp do_build_tree([root | rest], inorder) do
     {in_l, [_ | in_r]} = Enum.split_while(inorder, &(&1 != root))
-    {pre_l, pre_r} = Enum.split(rest, Enum.count(in_l))
+    pre_l = Enum.filter(rest, &(&1 in in_l))
+    pre_r = Enum.filter(rest, &(&1 in in_r))
+
     {do_build_tree(pre_l, in_l), root, do_build_tree(pre_r, in_r)}
   end
 end
