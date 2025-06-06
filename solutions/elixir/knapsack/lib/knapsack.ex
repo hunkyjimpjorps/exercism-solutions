@@ -3,16 +3,12 @@ defmodule Knapsack do
   Return the maximum value that a knapsack can carry.
   """
 
-  @spec maximum_value(
-          items :: [%{value: integer, weight: integer}],
-          maximum_weight :: integer
-        ) ::
+  defstruct [:weight_remaining, packed: [], current_value: 0]
+
+  @spec maximum_value(items :: [%{value: integer, weight: integer}], maximum_weight :: integer) ::
           integer
   def maximum_value(items, max_weight) do
-    pack_knapsack(items, %{
-      current_value: 0,
-      weight_remaining: max_weight
-    }).current_value
+    pack_knapsack(items, %Knapsack{weight_remaining: max_weight}).current_value
   end
 
   defp pack_knapsack([], state), do: state
@@ -26,7 +22,8 @@ defmodule Knapsack do
     leave_it = pack_knapsack(rest, state)
 
     take_it =
-      pack_knapsack(rest, %{
+      pack_knapsack(rest, %Knapsack{
+        packed: [current_item | state.packed],
         current_value: state.current_value + current_item.value,
         weight_remaining: state.weight_remaining - current_item.weight
       })
