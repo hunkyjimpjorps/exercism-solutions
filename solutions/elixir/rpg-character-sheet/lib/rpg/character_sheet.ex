@@ -21,7 +21,7 @@ defmodule RPG.CharacterSheet do
 
   def run() do
     welcome()
-    %{name: ask_name()} |>
+    character_map = %{name: ask_name()} |>
       Map.put(:class, ask_class()) |>
       Map.put(:level, ask_level()) |>
       IO.inspect(label: "Your character:")
