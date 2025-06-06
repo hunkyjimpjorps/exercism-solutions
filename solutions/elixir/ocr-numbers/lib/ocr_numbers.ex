@@ -17,11 +17,11 @@ defmodule OcrNumbers do
 
   @spec convert([String.t()]) :: {:ok, String.t()} | {:error, charlist()}
   def convert(input) when rem(length(input), 4) != 0 do
-    {:error, "invalid line count"}
+    {:error, 'invalid line count'}
   end
 
   def convert([head | _]) when rem(byte_size(head), 3) != 0 do
-    {:error, "invalid column count"}
+    {:error, 'invalid column count'}
   end
 
   def convert(input) do
