@@ -10,7 +10,7 @@ defmodule LanguageList do
   def count([]), do: 0
   def count([_ | tail]), do: 1 + count(tail)
 
-  def functional_list?([]), do: false
-  def functional_list?(["Elixir" | _]), do: true
-  def functional_list?([_ | tail]), do: functional_list?(tail)
+  def exciting_list?([]), do: false
+  def exciting_list?([head | _]) when head == "Elixir", do: true
+  def exciting_list?([_ | tail]), do: exciting_list?(tail)
 end
