@@ -14,11 +14,9 @@ type Allergen =
     | Cats = 128
 
 let list (codedAllergies: int) =
-    let union = enum<Allergen> (codedAllergies)
-
     Enum.GetValues(typeof<Allergen>) :?> (Allergen [])
     |> Array.toList
-    |> List.filter (fun a -> a &&& union = a)
+    |> List.filter (fun a -> a &&& enum<Allergen> (codedAllergies) = a)
 
 let allergicTo (codedAllergies: int) (allergen: Allergen) : bool =
-    List.contains allergen (list codedAllergies)
+    Seq.contains allergen (list codedAllergies)
