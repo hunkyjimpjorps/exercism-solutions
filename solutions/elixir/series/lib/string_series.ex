@@ -8,9 +8,9 @@ defmodule StringSeries do
   def slices(_, size) when size <= 0, do: []
 
   def slices(s, size) do
-    s
-    |> String.graphemes()
-    |> Enum.chunk_every(size, 1, :discard)
-    |> Enum.map(&to_string/1)
+    cond do
+      String.length(s) < size -> []
+      true -> [String.slice(s, 0, size) | slices(String.slice(s, 1..-1//1), size)]
+    end
   end
 end
