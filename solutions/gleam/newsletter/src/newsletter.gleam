@@ -6,7 +6,7 @@ import gleam/result
 pub fn read_emails(path: String) -> Result(List(String), Nil) {
   path
   |> simplifile.read()
-  |> result.replace_error(Nil)
+  |> result.nil_error()
   |> result.try(fn(s) {
     s
     |> string.trim()
@@ -18,12 +18,12 @@ pub fn read_emails(path: String) -> Result(List(String), Nil) {
 pub fn create_log_file(path: String) -> Result(Nil, Nil) {
   path
   |> simplifile.create_file()
-  |> result.replace_error(Nil)
+  |> result.nil_error()
 }
 
 pub fn log_sent_email(path: String, email: String) -> Result(Nil, Nil) {
   simplifile.append(email <> "\n", to: path)
-  |> result.replace_error(Nil)
+  |> result.nil_error()
 }
 
 pub fn send_newsletter(
@@ -35,9 +35,9 @@ pub fn send_newsletter(
   let assert Ok(emails) = read_emails(emails_path)
 
   {
-    use email <- list.each(emails)
-    use _ <- result.try(send_email(email))
-    let assert Ok(_) = log_sent_email(log_path, email)
+    use e <- list.map(emails)
+    use _ <- result.try(send_email(e))
+    let assert Ok(_) = log_sent_email(log_path, e)
   }
   Ok(Nil)
 }
