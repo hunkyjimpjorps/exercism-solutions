@@ -1,7 +1,7 @@
 defmodule SgfParsing do
   defmodule Sgf do
     defstruct properties: %{}, children: []
-  end
+  end 
 
   @type sgf :: %Sgf{properties: map, children: [sgf]}
 
