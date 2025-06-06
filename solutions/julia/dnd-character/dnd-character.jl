@@ -9,13 +9,14 @@ function ability()
 end
 
 mutable struct DNDCharacter
-    strength
-    dexterity
-    constitution
-    intelligence
-    wisdom
-    charisma
-    hitpoints
+    strength::Int
+    dexterity::Int
+    constitution::Int
+    intelligence::Int
+    wisdom::Int
+    charisma::Int
+    hitpoints::Int
+    
     function DNDCharacter()
         con = ability()
         new(ability(), ability(), con, ability(), ability(), ability(), 10 + modifier(con))
