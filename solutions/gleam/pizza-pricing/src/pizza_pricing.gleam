@@ -17,11 +17,7 @@ pub fn pizza_price(pizza: Pizza) -> Int {
 }
 
 pub fn order_price(order: List(Pizza)) -> Int {
-  case order {
-    [_] -> do_order_price(order, 3)
-    [_, _] -> do_order_price(order, 2)
-    _ -> do_order_price(order, 0)
-  }
+  do_order_price(order, 0)
 }
 
 fn do_order_price(order, acc) {
