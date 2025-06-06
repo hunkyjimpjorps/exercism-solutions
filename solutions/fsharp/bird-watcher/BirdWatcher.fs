@@ -15,8 +15,10 @@ let incrementTodaysCount (counts: int []) : int [] =
 let equals (n: int) ((_i, c): int * int) : bool = n = c
 
 let oddWeek (counts: int []) : bool =
-    let indexedCounts = Array.indexed counts
-    let odds, evens = Array.partition (fun (i, c) -> i % 2 = 0) indexedCounts
+    let odds, evens =
+        counts
+        |> Array.indexed
+        |> Array.partition (fun (i, c) -> i % 2 = 0)
 
     Array.forall (equals 10) evens
     || Array.forall (equals 0) evens
