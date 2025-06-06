@@ -1,5 +1,3 @@
-import gleam/string_builder.{type StringBuilder}
-
 const to_roman: List(#(Int, String)) = [
   #(1000, "M"),
   #(900, "CM"),
@@ -17,15 +15,15 @@ const to_roman: List(#(Int, String)) = [
 ]
 
 pub fn convert(number: Int) -> String {
-  next_symbol(to_roman, number, string_builder.new())
+  next_symbol(to_roman, number, "")
 }
 
-fn next_symbol(table: List(#(Int, String)), n: Int, acc: StringBuilder) {
+fn next_symbol(table: List(#(Int, String)), n: Int, acc: String) {
   case table {
-    [] -> string_builder.to_string(acc)
+    [] -> acc
     [#(val, sym), ..rest] -> {
       case n >= val {
-        True -> next_symbol(table, n - val, string_builder.append(acc, sym))
+        True -> next_symbol(table, n - val, acc <> sym)
         False -> next_symbol(rest, n, acc)
       }
     }
