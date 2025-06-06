@@ -28,7 +28,7 @@ defmodule Minesweeper do
     |> Enum.map(&Enum.join/1)
   end
 
-  def get_mine_positions(board) do
+  defp get_mine_positions(board) do
     for {row, i} <- Enum.with_index(board),
         {cell, j} <- Enum.with_index(String.codepoints(row)),
         into: %{} do
@@ -36,7 +36,7 @@ defmodule Minesweeper do
     end
   end
 
-  def adjacent_cells({i, j}) do
+  defp adjacent_cells({i, j}) do
     for delta_i <- -1..1,
         delta_j <- -1..1,
         {delta_i, delta_j} != {0, 0} do
