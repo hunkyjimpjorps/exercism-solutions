@@ -12,4 +12,4 @@ classify_triangle(3, "scalene").
 
 triangle(A, B, C, Type) :- 
     unique_sides([A, B, C], N),
-    once(classify_triangle(N, Type)).
+    once(classify_triangle(N, Type)). 
