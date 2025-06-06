@@ -21,15 +21,15 @@ pub type Team {
 }
 
 pub fn create_coach(name: String, former_player: Bool) -> Coach {
-  Coach(name: name, former_player: former_player)
+  Coach(name, former_player)
 }
 
 pub fn create_stats(wins: Int, losses: Int) -> Stats {
-  Stats(wins: wins, losses: losses)
+  Stats(wins, losses)
 }
 
 pub fn create_team(name: String, coach: Coach, stats: Stats) -> Team {
-  Team(name: name, coach: coach, stats: stats)
+  Team(name, coach, stats)
 }
 
 pub fn replace_coach(team: Team, coach: Coach) -> Team {
