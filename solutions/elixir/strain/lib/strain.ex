@@ -19,5 +19,9 @@ defmodule Strain do
   Do not use `Enum.reject`.
   """
   @spec discard(list :: list(any), fun :: (any -> boolean)) :: list(any)
-  def discard(l, f), do: keep(l, fn n -> not f.(n) end)
+  def discard([], _), do: []
+
+  def discard([h | t], f) do
+    if not f.(h), do: [h | discard(t, f)], else: discard(t, f)
+  end
 end
