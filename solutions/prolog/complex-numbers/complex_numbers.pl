@@ -2,7 +2,6 @@ real((Re, _), Re).
 imaginary((_, Im), Im).
 
 conjugate((Re, Im), (Re, -1*Im)).
-inv((Re, Im), (-1*Re, -1*Im)).
 abs((Re, Im), (Re**2 + Im**2)**0.5).
 
 add((A, B), (C, D), (A + C, B + D)).
