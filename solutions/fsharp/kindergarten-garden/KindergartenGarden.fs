@@ -30,14 +30,13 @@ let getPlantType (plant: char) : Plant =
     | 'V' -> Violets
     | _ -> failwith "Not a valid seed type"
 
-let divideGardenPlots (plots: string) : string list =
+let divideGardenPlots (plots: string) : string array =
     plots
     |> Strings.split '\n'
-    |> Array.toList
-    |> List.map (Seq.chunkBySize 2)
-    |> List.map (Seq.toList)
-    |> List.map (List.map System.String)
-    |> (fun g -> List.map2 (fun a b -> a + b) g.[0] g.[1])
+    |> Array.map (Seq.chunkBySize 2)
+    |> Array.map (Seq.toArray)
+    |> Array.map (Array.map System.String)
+    |> (fun g -> Array.map2 (fun a b -> a + b) g.[0] g.[1])
 
 let plants (diagram: string) (student: string) : Plant list =
     let gardenPlots = divideGardenPlots diagram
