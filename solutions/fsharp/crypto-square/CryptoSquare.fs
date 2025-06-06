@@ -19,7 +19,6 @@ let ciphertext (input: string) =
     input.ToLower()
     |> fun str -> Regex.Replace(str, "[^a-z0-9]", "")
     |> padAndChunkString
-    |> Seq.toArray
-    |> Array.transpose
-    |> Array.map System.String.Concat
+    |> Seq.transpose
+    |> Seq.map System.String.Concat
     |> fun arr -> System.String.Join(' ', arr)
