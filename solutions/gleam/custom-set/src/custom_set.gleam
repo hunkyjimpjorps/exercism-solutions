@@ -1,4 +1,4 @@
-import gleam/map.{Map, keys}
+import gleam/map.{type Map}
 import gleam/list
 
 pub opaque type Set(t) {
@@ -22,14 +22,14 @@ pub fn contains(in set: Set(t), this member: t) -> Bool {
 
 pub fn is_subset(first: Set(t), of second: Set(t)) -> Bool {
   list.all(
-    in: keys(first.contents),
+    in: map.keys(first.contents),
     satisfying: map.has_key(second.contents, _),
   )
 }
 
 pub fn disjoint(first: Set(t), second: Set(t)) -> Bool {
   !list.any(
-    in: keys(first.contents),
+    in: map.keys(first.contents),
     satisfying: map.has_key(second.contents, _),
   )
 }
