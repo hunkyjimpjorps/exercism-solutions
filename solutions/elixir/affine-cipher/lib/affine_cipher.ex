@@ -22,7 +22,7 @@ defmodule AffineCipher do
       |> String.downcase()
       |> then(&for <<c <- &1>>, do: <<encode_letter(a, b, c)>>)
       |> Enum.chunk_every(5)
-      |> Enum.map_join(&Enum.join/1)
+      |> Enum.map_join(" ", &Enum.join/1)
       |> ok()
     end
   end
