@@ -137,9 +137,9 @@ fn parse_with_context(op: ForthType, f: Forth) -> List(ForthType) {
 
 pub fn standard_library() -> Map(ForthType, ForthOp(ForthType)) {
   [
-    #(Word("+"), ListOp(add)),
-    #(Word("-"), ListOp(sub)),
-    #(Word("*"), ListOp(mul)),
+    #(Word("+"), ListOp(arity2_op(_, int.add))),
+    #(Word("-"), ListOp(arity2_op(_, int.subtract))),
+    #(Word("*"), ListOp(arity2_op(_, int.multiply))),
     #(Word("/"), ListOp(div)),
     #(Word("DUP"), ListOp(dup)),
     #(Word("DROP"), ListOp(drop)),
@@ -156,25 +156,10 @@ fn arity2_op(xs, f) {
   }
 }
 
-fn add(xs) {
-  arity2_op(xs, int.add)
-}
-
-fn sub(xs) {
-  arity2_op(xs, int.subtract)
-}
-
-fn mul(xs) {
-  arity2_op(xs, int.multiply)
-}
-
 fn div(xs) {
   case xs {
-    [Number(a), Number(b), ..rest] ->
-      case int.divide(b, a) {
-        Ok(result) -> Ok([Number(result), ..rest])
-        Error(Nil) -> Error(DivisionByZero)
-      }
+    [Number(0), Number(_), ..] -> Error(DivisionByZero)
+    [Number(a), Number(b), ..rest] -> Ok([Number(b/a), ..rest])
     _ -> Error(StackUnderflow)
   }
 }
