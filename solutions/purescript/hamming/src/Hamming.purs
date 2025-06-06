@@ -4,18 +4,12 @@ module Hamming
 
 import Prelude
 
-import Data.Array (foldl, zip)
 import Data.Maybe (Maybe(..))
-import Data.String (length)
-import Data.String.CodeUnits (toCharArray)
-import Data.Tuple (Tuple(..))
+import Data.String (drop, length, take)
 
 distance :: String -> String -> Maybe Int
+distance s1 s2 | length s1 /= length s2 = Nothing
+distance "" "" = Just 0
 distance s1 s2
-  | length s1 /= length s2 = Nothing
-  | otherwise = Just $ foldl check 0 pairs
-      where
-      cs1 = toCharArray s1
-      cs2 = toCharArray s2
-      pairs = zip cs1 cs2
-      check acc (Tuple x y) = if x == y then acc else acc + 1
+  | take 1 s1 == take 1 s2 = distance (drop 1 s1) (drop 1 s2)
+  | otherwise = (_ + 1) <$> distance (drop 1 s1) (drop 1 s2)
