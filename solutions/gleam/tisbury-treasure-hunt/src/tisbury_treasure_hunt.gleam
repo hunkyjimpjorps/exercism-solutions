@@ -1,10 +1,10 @@
 import gleam/list
+import gleam/pair
 
 pub fn place_location_to_treasure_location(
   place_location: #(String, Int),
 ) -> #(Int, String) {
-  let #(y, x) = place_location
-  #(x, y)
+  pair.swap(place_location)
 }
 
 pub fn treasure_location_matches_place_location(
