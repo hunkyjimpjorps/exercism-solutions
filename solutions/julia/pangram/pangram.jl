@@ -10,5 +10,6 @@ function ispangram(input)
         replace(_, r"[^A-Za-z]" => "") |>
         lowercase |>
         unique |>
-        ⊆('a':'z', _)
+        length |>
+        ==(26, _)
 end
