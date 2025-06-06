@@ -16,7 +16,7 @@ defmodule Say do
     9 => "nine"
   }
 
-  @tens_digits %{2 => "twenty", 3 => "thirty", 4 => "forty", 5 => "fifty", 8 => "eighty"}
+  @special_tens_digits %{2 => "twenty", 3 => "thirty", 4 => "forty", 5 => "fifty", 8 => "eighty"}
 
   @doc """
   Translate a positive integer into English.
@@ -31,7 +31,6 @@ defmodule Say do
   def in_english(number) do
     group_by_thousands(number)
     |> Enum.map(&parse_chunk/1)
-    |> Enum.reverse()
     |> Enum.zip(@positions)
     |> Enum.reverse()
     |> Enum.reject(fn {word, _} -> word == "" end)
@@ -40,7 +39,7 @@ defmodule Say do
   end
 
   defp tens_digit_name(n) do
-    Map.get(@tens_digits, n, @ones_digits[n] <> "ty")
+    Map.get(@special_tens_digits, n, @ones_digits[n] <> "ty")
   end
 
   defp group_by_thousands(number) do
@@ -48,7 +47,6 @@ defmodule Say do
     |> Enum.reverse()
     |> Enum.chunk_every(3, 3, [0, 0, 0])
     |> Enum.map(&Enum.reverse/1)
-    |> Enum.reverse()
   end
 
   defp parse_chunk([0, 0, 0]), do: ""
@@ -57,8 +55,6 @@ defmodule Say do
   defp parse_chunk([h, t, o]), do: parse_hundreds(h) <> " " <> parse_tens_and_ones(t, o)
 
   defp parse_hundreds(h), do: @ones_digits[h] <> " " <> "hundred"
-
-  defp parse_tens_and_ones(0, o), do: @ones_digits[o]
 
   defp parse_tens_and_ones(1, o) do
     case o do
@@ -70,6 +66,7 @@ defmodule Say do
     end
   end
 
+  defp parse_tens_and_ones(0, o), do: @ones_digits[o]
   defp parse_tens_and_ones(t, 0), do: tens_digit_name(t)
   defp parse_tens_and_ones(t, o), do: tens_digit_name(t) <> "-" <> @ones_digits[o]
 end
