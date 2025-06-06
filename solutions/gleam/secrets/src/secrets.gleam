@@ -1,3 +1,5 @@
+import gleam/function
+
 pub fn secret_add(secret: Int) -> fn(Int) -> Int {
   fn(x) { x + secret }
 }
@@ -18,5 +20,5 @@ pub fn secret_combine(
   secret_function1: fn(Int) -> Int,
   secret_function2: fn(Int) -> Int,
 ) -> fn(Int) -> Int {
-  fn(x) { secret_function2(secret_function1(x)) }
+  function.compose(secret_function1, secret_function2)
 }
