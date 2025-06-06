@@ -1,4 +1,4 @@
-import gleam/string_builder.{StringBuilder}
+import gleam/string_builder.{type StringBuilder}
 
 const to_roman: List(#(Int, String)) = [
   #(1000, "M"),
