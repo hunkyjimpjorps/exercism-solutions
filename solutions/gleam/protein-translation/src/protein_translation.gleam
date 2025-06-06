@@ -4,42 +4,36 @@ import gleam/string
 type Protein {
   Protein(String)
   StopCodon
+  EndOfString
   TranslationError
 }
 
 fn translate_codon(codon: String) -> Protein {
   case codon {
+    "UGU" | "UGC" -> Protein("Cysteine")
+    "UUA" | "UUG" -> Protein("Leucine")
     "AUG" -> Protein("Methionine")
     "UUU" | "UUC" -> Protein("Phenylalanine")
-    "UUA" | "UUG" -> Protein("Leucine")
     "UCU" | "UCC" | "UCA" | "UCG" -> Protein("Serine")
-    "UAU" | "UAC" -> Protein("Tyrosine")
-    "UGU" | "UGC" -> Protein("Cysteine")
     "UGG" -> Protein("Tryptophan")
+    "UAU" | "UAC" -> Protein("Tyrosine")
     "UAA" | "UAG" | "UGA" -> StopCodon
+    "" -> EndOfString
     _ -> TranslationError
   }
 }
 
-fn parse_sequence(
-  codons: List(Protein),
+fn do_parse_sequence(
+  codons: String,
   into acc: List(String),
 ) -> Result(List(String), Nil) {
-  case codons {
-    [] | [StopCodon, ..] -> Ok(list.reverse(acc))
-    [TranslationError, ..] -> Error(Nil)
-    [Protein(p), ..rest] -> parse_sequence(rest, [p, ..acc])
+  case translate_codon(string.slice(codons, 0, 3)) {
+    EndOfString | StopCodon -> Ok(list.reverse(acc))
+    TranslationError -> Error(Nil)
+    Protein(p) -> do_parse_sequence(string.drop_left(codons, 3), [p, ..acc])
   }
 }
 
 pub fn proteins(rna: String) -> Result(List(String), Nil) {
-  rna
-  |> string.to_graphemes()
-  |> list.sized_chunk(into: 3)
-  |> list.map(fn(chunk) {
-    chunk
-    |> string.concat()
-    |> translate_codon()
-  })
-  |> parse_sequence(into: [])
+  do_parse_sequence(rna, into: [])
 }
