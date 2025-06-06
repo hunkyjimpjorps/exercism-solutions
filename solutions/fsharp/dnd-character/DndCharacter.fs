@@ -1,6 +1,9 @@
 ﻿module DndCharacter
 
-let r = System.Random()
+open FSharpPlus.Math.Generic
+open System
+
+let r = Random()
 
 type Character =
     { Strength: int
@@ -11,7 +14,7 @@ type Character =
       Charisma: int
       Hitpoints: int }
 
-let modifier x = (x - 10) / 2
+let modifier x = divE (x - 10) 2
 
 let ability () =
     [for _ in 1 .. 4 do yield r.Next(1, 7) ]
