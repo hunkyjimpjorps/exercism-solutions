@@ -5,7 +5,7 @@ dna_to_rna = Dict('G' => 'C',
 
 function to_rna(dna)
     try
-        string((dna_to_rna[c] for c in dna)...)
+        string(collect(dna_to_rna[c] for c in dna)...)
     catch 
         throw(ErrorException("Invalid DNA base"))
     end
