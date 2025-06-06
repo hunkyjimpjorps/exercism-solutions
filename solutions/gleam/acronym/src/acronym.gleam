@@ -13,4 +13,3 @@ pub fn abbreviate(phrase phrase: String) -> String {
   })
   |> string.concat()
 }
- 
