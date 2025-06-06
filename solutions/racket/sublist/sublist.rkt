@@ -2,15 +2,20 @@
 
 (provide sublist?)
 
-(define (sublist? s l)
+(define (sublist? left right)
   (cond
-    [(equal? s l) 'equal]
-    [(and ((length s) . < . (length l)) (contains? s l)) 'sublist]
-    [(contains? l s) 'superlist]
+    [(equal? left right) 'equal]
+    [(contains? left right) 'sublist]
+    [(contains? right left) 'superlist]
     [else 'unequal]))
 
-(define (contains? sub sup)
-  (cond
-    [((length sub) . > . (length sup)) #false]
-    [(list-prefix? sub sup) #true]
-    [else (contains? sub (rest sup))]))
+(define/match (contains? sub sup)
+  [('() _) #true]
+  [((app length sub-length) (app length sup-length))
+   #:when (sub-length . > . sup-length)
+   #false]
+  [(_ _)
+   (match (member (first sub) sup)
+     [#false #false]
+     [(? (curry list-prefix? sub)) #true]
+     [(list* _ xs) (contains? sub xs)])])
