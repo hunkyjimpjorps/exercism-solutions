@@ -13,7 +13,7 @@ pub fn can_chain(chain: List(#(Int, Int))) -> Bool {
 // Rather than keep track of the full chain, replace two matching dominoes with an equivalent single domino
 
 fn find_matches(d: #(Int, Int), dominoes: List(#(Int, Int))) -> Bool {
-  let [#(left_side, right_side), ..unmatched] = dominoes
+  let assert [#(left_side, right_side), ..unmatched] = dominoes
 
   case d {
     #(left, right) as match | #(right, left) as match if right == left_side -> {
