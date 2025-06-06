@@ -10,7 +10,7 @@ defmodule Dominoes do
   def chain?([{a, a}]), do: true
   def chain?([_]), do: false
 
-  def chain?([{l, r} = head | others] = dominoes) do
+  def chain?([_ | others] = dominoes) do
     Enum.any?(others, &find_possible_matches(&1, dominoes))
   end
 
