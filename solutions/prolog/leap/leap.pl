@@ -1,3 +1,3 @@
 leap(X) :- 
-    0 is X mod 400;
-    0 is X mod 4, not(0 is X mod 100).
+    0 is mod(X,400);
+    0 is mod(X,4), not(0 is mod(X,100)).
