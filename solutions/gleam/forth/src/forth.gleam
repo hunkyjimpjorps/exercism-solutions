@@ -1,13 +1,14 @@
 import gleam/int
 import gleam/list
+import gleam/result
 import gleam/string
-import gleam/dict.{type Dict}
+import gleam/map.{type Map}
 
 pub type Forth {
   Forth(
     program: List(ForthType),
     stack: List(ForthType),
-    definitions: Dict(ForthType, ForthOp(ForthType)),
+    definitions: Map(ForthType, ForthOp(ForthType)),
   )
 }
 
@@ -44,26 +45,27 @@ pub fn format_stack(f: Forth) -> String {
 
 pub fn eval(f: Forth, prog: String) -> Result(Forth, ForthError) {
   prog
-  |> tokenize_input
-  |> Forth(program: _, stack: f.stack, definitions: f.definitions)
-  |> run_program(_)
+  |> tokenize_input()
+  |> result.map(Forth(program: _, stack: f.stack, definitions: f.definitions))
+  |> result.try(run_program(_))
 }
 
-fn tokenize_input(prog: String) -> List(ForthType) {
+fn tokenize_input(prog: String) -> Result(List(ForthType), ForthError) {
   prog
   |> string.uppercase()
   |> string.split(" ")
   |> list.map(identify_token)
+  |> result.all()
 }
 
-fn identify_token(word: String) -> ForthType {
+fn identify_token(word: String) -> Result(ForthType, ForthError) {
   case word {
-    ":" -> StartDef
-    ";" -> EndDef
+    ":" -> Ok(StartDef)
+    ";" -> Ok(EndDef)
     w ->
       case int.parse(w) {
-        Ok(n) -> Number(n)
-        Error(Nil) -> Word(w)
+        Ok(n) -> Ok(Number(n))
+        Error(Nil) -> Ok(Word(w))
       }
   }
 }
@@ -83,13 +85,13 @@ fn run_program(forth: Forth) -> Result(Forth, ForthError) {
       case attempt_definition(rest, forth) {
         Ok(#(name, ops, program_rest)) ->
           forth.definitions
-          |> dict.insert(name, CustomOp(ops))
+          |> map.insert(name, CustomOp(ops))
           |> Forth(stack: forth.stack, program: program_rest, definitions: _)
           |> run_program()
         Error(err) -> Error(err)
       }
     _, [Word(w), ..rest] ->
-      case dict.get(forth.definitions, Word(w)) {
+      case map.get(forth.definitions, Word(w)) {
         Ok(CustomOp(ops)) ->
           ops
           |> list.append(forth.program)
@@ -100,7 +102,7 @@ fn run_program(forth: Forth) -> Result(Forth, ForthError) {
             Ok(new_stack) -> run_program(Forth(..forth, stack: new_stack))
             Error(err) -> Error(err)
           }
-        _ -> Error(UnknownWord)
+        Error(Nil) -> Error(UnknownWord)
       }
     [], _ -> Ok(forth)
     [next, ..rest], s ->
@@ -114,7 +116,7 @@ fn attempt_definition(
 ) -> Result(#(ForthType, List(ForthType), List(ForthType)), ForthError) {
   case words {
     [Word(w), ..rest] -> {
-      let assert #(ops, [EndDef, ..stack]) =
+      let #(ops, [EndDef, ..stack]) =
         list.split_while(rest, fn(w) { w != EndDef })
       let ops = list.flat_map(ops, parse_with_context(_, forth))
       Ok(#(Word(string.uppercase(w)), ops, stack))
@@ -126,7 +128,7 @@ fn attempt_definition(
 fn parse_with_context(op: ForthType, f: Forth) -> List(ForthType) {
   case op {
     Word(_) as w ->
-      case dict.get(f.definitions, w) {
+      case map.get(f.definitions, w) {
         Ok(CustomOp(ops)) -> ops
         Ok(_) -> [w]
         _ -> []
@@ -135,18 +137,18 @@ fn parse_with_context(op: ForthType, f: Forth) -> List(ForthType) {
   }
 }
 
-pub fn standard_library() -> Dict(ForthType, ForthOp(ForthType)) {
+pub fn standard_library() -> Map(ForthType, ForthOp(ForthType)) {
   [
-    #(Word("+"), ListOp(arity2_op(_, int.add))),
-    #(Word("-"), ListOp(arity2_op(_, int.subtract))),
-    #(Word("*"), ListOp(arity2_op(_, int.multiply))),
+    #(Word("+"), ListOp(add)),
+    #(Word("-"), ListOp(sub)),
+    #(Word("*"), ListOp(mul)),
     #(Word("/"), ListOp(div)),
     #(Word("DUP"), ListOp(dup)),
     #(Word("DROP"), ListOp(drop)),
     #(Word("SWAP"), ListOp(swap)),
     #(Word("OVER"), ListOp(over)),
   ]
-  |> dict.from_list()
+  |> map.from_list()
 }
 
 fn arity2_op(xs, f) {
@@ -156,10 +158,25 @@ fn arity2_op(xs, f) {
   }
 }
 
+fn add(xs) {
+  arity2_op(xs, int.add)
+}
+
+fn sub(xs) {
+  arity2_op(xs, int.subtract)
+}
+
+fn mul(xs) {
+  arity2_op(xs, int.multiply)
+}
+
 fn div(xs) {
   case xs {
-    [Number(0), Number(_), ..] -> Error(DivisionByZero)
-    [Number(a), Number(b), ..rest] -> Ok([Number(b/a), ..rest])
+    [Number(a), Number(b), ..rest] ->
+      case int.divide(b, a) {
+        Ok(result) -> Ok([Number(result), ..rest])
+        Error(Nil) -> Error(DivisionByZero)
+      }
     _ -> Error(StackUnderflow)
   }
 }
