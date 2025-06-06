@@ -21,4 +21,4 @@ let list (codedAllergies: int) =
     |> List.filter (fun a -> a &&& union = a)
 
 let allergicTo (codedAllergies: int) (allergen: Allergen) : bool =
-    Seq.contains allergen (list codedAllergies)
+    List.contains allergen (list codedAllergies)
