@@ -1,13 +1,13 @@
-import gleam/yielder
+import gleam/iterator
 import gleam/bool
 
 pub fn prime(number: Int) -> Result(Int, Nil) {
   use <- bool.guard(number <= 0, Error(Nil))
 
-  yielder.single(2)
-  |> yielder.append(yielder.iterate(3, fn(n) { n + 2 }))
-  |> yielder.filter(is_prime(_, 3))
-  |> yielder.at(number - 1)
+  iterator.single(2)
+  |> iterator.append(iterator.iterate(3, fn(n) { n + 2 }))
+  |> iterator.filter(is_prime(_, 3))
+  |> iterator.at(number - 1)
 }
 
 fn is_prime(n: Int, k: Int) -> Bool {
@@ -16,4 +16,3 @@ fn is_prime(n: Int, k: Int) -> Bool {
   use <- bool.guard(n % k == 0, False)
   is_prime(n, k + 2)
 }
- 
