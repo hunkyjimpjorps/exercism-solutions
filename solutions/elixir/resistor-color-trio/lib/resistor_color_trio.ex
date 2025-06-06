@@ -23,7 +23,7 @@ defmodule ResistorColorTrio do
     9 => :gigaohms
   }
 
-  @spec label(colors :: [atom]) :: {number, :ohms | :kiloohms}
+  @spec label(colors :: [atom]) :: {number, :ohms | :kiloohms | :megaohms | :gigaohms}
   def label(colors) do
     colors
     |> Enum.map(fn c -> @colors[c] end)
