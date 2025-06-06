@@ -2,10 +2,17 @@
 
 open System.Text.RegularExpressions
 
-let (|InvalidCharacter|) (n: string) = Regex.IsMatch(n, "[^0-9]")
-let (|TooShort|) (n: string) = n.Length <= 1
+let makeActivePattern =
+    function
+    | true -> Some()
+    | false -> None
 
-let (|InvalidChecksum|) (n: string) =
+let (|InvalidCharacter|_|) (n: string) =
+    Regex.IsMatch(n, "[^0-9]") |> makeActivePattern
+
+let (|TooShort|_|) (n: string) = n.Length <= 1 |> makeActivePattern
+
+let (|InvalidChecksum|_|) (n: string) =
     n
     |> fun n -> Regex.Replace(n, " ", "")
     |> Seq.rev
@@ -18,13 +25,13 @@ let (|InvalidChecksum|) (n: string) =
         | _, n -> 2 * n)
     |> (fun n -> n % 10)
     |> (<>) 0
+    |> makeActivePattern
 
 let valid (number: string) : bool =
-
     number
     |> fun n -> Regex.Replace(n, " ", "")
     |> function
-        | InvalidCharacter true
-        | TooShort true
-        | InvalidChecksum true -> false
+        | InvalidCharacter
+        | TooShort
+        | InvalidChecksum -> false
         | _ -> true
