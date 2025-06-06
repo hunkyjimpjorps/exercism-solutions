@@ -18,9 +18,9 @@ defmodule ResistorColorTrio do
 
   @powers %{
     0 => :ohms,
-    1 => :kiloohms,
-    2 => :megaohms,
-    3 => :gigaohms
+    3 => :kiloohms,
+    6 => :megaohms,
+    9 => :gigaohms
   }
 
   @spec label(colors :: [atom]) :: {number, :ohms | :kiloohms}
@@ -33,8 +33,8 @@ defmodule ResistorColorTrio do
     |> (fn
           0 -> {0, :ohms}
           r -> 
-            base = floor(:math.log10(r) / 3)
-            {r / (10 ** (3 * base)), @powers[base]}
+            base = 3 * floor(:math.log10(r) / 3)
+            {r / (10 ** base), @powers[base]}
         end).()
   end
 end
