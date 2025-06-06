@@ -13,20 +13,11 @@ defmodule Wordy do
 
   defp tokenize(str) when is_binary(str) do
     case str do
-      "plus " <> rest ->
-        [:add | tokenize(rest)]
-
-      "minus " <> rest ->
-        [:sub | tokenize(rest)]
-
-      "multiplied by " <> rest ->
-        [:mul | tokenize(rest)]
-
-      "divided by " <> rest ->
-        [:div | tokenize(rest)]
-
-      _ ->
-        seek_integer(str)
+      "plus " <> rest -> [:add | tokenize(rest)]
+      "minus " <> rest -> [:sub | tokenize(rest)]
+      "multiplied by " <> rest -> [:mul | tokenize(rest)]
+      "divided by " <> rest -> [:div | tokenize(rest)]
+      _ -> seek_integer(str)
     end
   end
 
