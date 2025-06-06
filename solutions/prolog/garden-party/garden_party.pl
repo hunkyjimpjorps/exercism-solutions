@@ -33,7 +33,7 @@ solution(BevVars, DishVars) :-
     Frybread #= Tonic,
     Mei #= Lassi,
     Winona #\= PadThai,
-    Amasi #\= Biryani,
+    Lassi #\= Biryani,
 
     label(BevVars).
 
