@@ -6,7 +6,8 @@ function comparefactors(n, op)
     if n <= zero(n) 
         throw(DomainError("Not a natural order"))
     else 
-        op(n, sum(allfactors(n)))
+        aliquot = sum(allfactors(n))
+        op(n, aliquot)
     end
 end
 
