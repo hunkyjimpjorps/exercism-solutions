@@ -17,7 +17,7 @@ let atbashTransform =
 
 let encode (str: string) =
     str.ToLower()
-    |> fun s -> Regex.Replace(s, "[^a-z123]", "")
+    |> fun s -> Regex.Replace(s, "[^a-z0-9]", "")
     |> atbashTransform
     |> Seq.chunkBySize 5
     |> Seq.map String.Concat
