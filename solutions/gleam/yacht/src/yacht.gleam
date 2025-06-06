@@ -1,4 +1,4 @@
-import gleam/map.{Map}
+import gleam/dict.{type Dict}
 import gleam/list
 import gleam/option.{None, Some}
 import gleam/result
@@ -20,7 +20,7 @@ pub type Category {
 }
 
 type Bag =
-  Map(Int, Int)
+  Dict(Int, Int)
 
 pub fn score(category: Category, dice: List(Int)) -> Int {
   let bag = hand_to_bag(dice)
@@ -34,13 +34,12 @@ pub fn score(category: Category, dice: List(Int)) -> Int {
     BigStraight -> score_big_straight(dice)
     Choice -> sum_of_bag(bag)
     Yacht -> score_yacht(bag)
-    _ -> 0
   }
 }
 
 fn hand_to_bag(dice: List(Int)) -> Bag {
-  use acc, i <- list.fold(over: dice, from: map.new())
-  use x <- map.update(in: acc, update: i)
+  use acc, i <- list.fold(over: dice, from: dict.new())
+  use x <- dict.upsert(in: acc, update: i)
   case x {
     Some(count) -> count + 1
     None -> 1
@@ -48,7 +47,7 @@ fn hand_to_bag(dice: List(Int)) -> Bag {
 }
 
 fn sum_of_bag(bag: Bag) -> Int {
-  map.fold(bag, 0, fn(acc, k, v) { acc + k * v })
+  dict.fold(bag, 0, fn(acc, k, v) { acc + k * v })
 }
 
 fn score_multiples(bag: Bag, category: Category) -> Int {
@@ -62,24 +61,24 @@ fn score_multiples(bag: Bag, category: Category) -> Int {
     _ -> 0
   }
 
-  map.get(bag, die_value)
+  dict.get(bag, die_value)
   |> result.unwrap(0)
   |> fn(n) { n * die_value }
 }
 
 fn score_full_house(bag: Bag) -> Int {
-  case map.values(bag) {
+  case dict.values(bag) {
     [2, 3] | [3, 2] -> sum_of_bag(bag)
     _ -> 0
   }
 }
 
 fn score_four_of_a_kind(bag: Bag) -> Int {
-  case map.values(bag) {
+  case dict.values(bag) {
     [5] | [4, 1] | [1, 4] ->
       bag
-      |> map.filter(fn(_, v) { v >= 4 })
-      |> map.map_values(fn(_, _) { 4 })
+      |> dict.filter(fn(_, v) { v >= 4 })
+      |> dict.map_values(fn(_, _) { 4 })
       |> sum_of_bag
     _ -> 0
   }
@@ -100,7 +99,7 @@ fn score_big_straight(dice: List(Int)) -> Int {
 }
 
 fn score_yacht(bag: Bag) -> Int {
-  case map.values(bag) {
+  case dict.values(bag) {
     [5] -> 50
     _ -> 0
   }
