@@ -33,9 +33,9 @@ pub fn plants(diagram: String, student: Student) -> List(Plant) {
     |> list.sized_chunk(2)
   })
   |> list.transpose()
-  |> list.map(fn(strs) {
-    strs
-    |> list.flatten()
+  |> list.map(fn(str) {
+    str
+    |> list.concat()
     |> list.map(to_plant)
   })
   |> list.zip(roster, _)
@@ -64,6 +64,5 @@ fn to_plant(str: String) -> Plant {
     "C" -> Clover
     "V" -> Violets
     "G" -> Grass
-    _ -> panic
   }
 }
