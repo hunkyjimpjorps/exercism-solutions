@@ -17,25 +17,17 @@ defmodule PokerHands do
     n in (hand |> ranks |> Enum.frequencies() |> Map.values())
   end
 
-  def classify(hand, :straight_flush), do: {:straight_flush, high_card(hand)}
-  def classify(hand, :straight), do: {:straight, high_card(hand)}
-  def classify(hand, as), do: {as, prioritize_sets(hand)}
-
   defp ranks(hand), do: hand |> Enum.map(&elem(&1, 0)) |> Enum.sort(:desc)
   defp suits(hand), do: hand |> Enum.map(&elem(&1, 1)) |> Enum.uniq()
 
-  defp high_card(hand) do
+  def tiebreakers(hand) do
     if ranks(hand) == [14, 5, 4, 3, 2] do
-      [5]
+      [5, 4, 3, 2, 1]
     else
-      [hd(ranks(hand))]
+      ranks(hand)
+      |> Enum.chunk_by(& &1)
+      |> Enum.sort_by(&length/1, :desc)
+      |> List.flatten()
     end
-  end
-
-  defp prioritize_sets(hand) do
-    ranks(hand)
-    |> Enum.chunk_by(& &1)
-    |> Enum.sort_by(&length/1, :desc)
-    |> List.flatten()
   end
 end
