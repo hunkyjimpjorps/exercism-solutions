@@ -9,12 +9,6 @@ defmodule PerfectNumbers do
   :abundant if the aliquot sum is greater than `number`
   :deficient if the aliquot sum is less than `number`
   """
-  defp factors(number) do
-    Enum.filter(Enum.to_list(1..floor(:math.sqrt(number))), fn f -> Integer.mod(number, f) == 0 end)
-    |> Enum.flat_map(fn n -> if(div(number, n) == n, do: [n], else: [n, div(number, n)]) end)
-    |> Enum.sum()
-  end
-
   @spec classify(number :: integer) :: {:ok, atom} | {:error, String.t()}
   def classify(number) when number < 1, do: {:error, "Classification is only possible for natural numbers."}
   def classify(number) do
@@ -23,5 +17,11 @@ defmodule PerfectNumbers do
       n when n > 2 * number -> {:ok, :abundant}
       n when n < 2 * number -> {:ok, :deficient}      
     end
+  end
+
+  defp factors(number) do
+    Enum.filter(Enum.to_list(1..floor(:math.sqrt(number))), fn f -> Integer.mod(number, f) == 0 end)
+    |> Enum.flat_map(fn n -> if(div(number, n) == n, do: [n], else: [n, div(number, n)]) end)
+    |> Enum.sum()
   end
 end
