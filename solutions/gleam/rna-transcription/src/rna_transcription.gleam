@@ -5,7 +5,8 @@ import gleam/result
 pub fn to_rna(dna: String) -> Result(String, Nil) {
   dna
   |> string.to_graphemes()
-  |> list.try_map(nucleotide_complement)
+  |> list.map(nucleotide_complement)
+  |> result.all()
   |> result.map(string.concat)
 }
 
