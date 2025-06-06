@@ -35,5 +35,5 @@ fn rem_e(a: Int, b: Int) -> Int {
 }
 
 fn pad(digits: Int) -> String {
-  string.pad_start(int.to_string(digits), 2, "0")
+  string.pad_left(int.to_string(digits), 2, "0")
 }
