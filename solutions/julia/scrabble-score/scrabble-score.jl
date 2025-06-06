@@ -18,10 +18,11 @@ for category in letterscores
 end
 
 function score(str)
+    if str == "" return 0 end 
     @pipe str |>
         uppercase |>
         replace(_, r"[^A-Z]" => "") |>
         collect |>
         map(c -> letterdict[c], _) |>
-        reduce(+, _; init=0)   
+        sum        
 end
