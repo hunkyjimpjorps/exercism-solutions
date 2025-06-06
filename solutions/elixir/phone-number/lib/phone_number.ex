@@ -23,12 +23,12 @@ defmodule PhoneNumber do
   end
 
   defp check_length_and_prefix(phone) do
+    IO.inspect(phone)
     case phone do
       <<"1", n::binary-size(10)>> -> {:ok, n}
       <<n::binary-size(10)>> -> {:ok, n}
       <<_::binary-size(11)>> -> {:error, "11 digits must start with 1"}
-      <<_::binary-size(11), _>> -> {:error, "must not be greater than 11 digits"}
-      _ -> {:error, "must not be fewer than 10 digits"}
+      _ -> {:error, "incorrect number of digits"}
     end
   end
 
