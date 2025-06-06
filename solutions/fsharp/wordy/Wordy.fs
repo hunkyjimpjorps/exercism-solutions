@@ -2,39 +2,46 @@ module Wordy
 
 open FParsec
 
+type Operation =
+    | Add
+    | Subtract
+    | Multiply
+    | Divide
+
 // parser primitives
 let ws = spaces
-let pBegin = skipString "What is" >>. ws
+
+let pBegin = skipString "What is"
 let pEnd = skipString "?"
 
 let pNumber = pint32
 
-// set up the OperatorPrecedenceParser
-// which automatically parses alternating series of terms and operators
-let pOpParser =
-    new OperatorPrecedenceParser<int, unit, unit>()
+let pOperator =
+    choice [ stringReturn "plus" Add
+             stringReturn "minus" Subtract
+             stringReturn "multiplied by" Multiply
+             stringReturn "divided by" Divide ]
 
-pOpParser.TermParser <- pNumber .>> ws
-
-// for each string, define an operator that
-// - is delimited by spaces
-// - has an associativity level of 1 (same level for all operators)
-// - is left associative (all operations calculated from left to right)
-[| "plus", (+)
-   "minus", (-)
-   "multiplied by", (*)
-   "divided by", (/) |]
-|> Array.iter (fun (s, op) -> pOpParser.AddOperator(InfixOperator(s, ws, 1, Associativity.Left, op)))
+let pNextOp = (ws >>. pOperator) .>>. (ws >>. pNumber)
 
 let pSentence =
-    pBegin >>. pOpParser.ExpressionParser .>> pEnd
+    tuple2 (pBegin .>> ws >>. pNumber) (many pNextOp .>> pEnd)
 
 // parsing function
+
+let lookupFunc (f: Operation) : int -> int -> int =
+    match f with
+    | Add -> (+)
+    | Subtract -> (-)
+    | Multiply -> (*)
+    | Divide -> (/)
+
+let rec parseCaptures (c: int * (Operation * int) list) : int =
+    match c with
+    | acc, [] -> acc
+    | acc, h :: t -> parseCaptures ((lookupFunc (fst h) acc (snd h)), t)
+
 let answer (question: string) : int option =
     match run pSentence question with
-    | Success (result, _, _) ->
-        printfn $"Success: {question} was parsed as {result}"
-        Some(result)
-    | Failure (error, _, _) ->
-        printfn $"Error: {error}"
-        None
+    | Success (result, _, _) -> Some(parseCaptures result)
+    | Failure (_) -> None
