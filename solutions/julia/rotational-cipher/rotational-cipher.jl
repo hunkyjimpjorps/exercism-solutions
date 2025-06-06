@@ -1,22 +1,22 @@
-alphabet_length = length(collect('A':'Z'))
-
 function rotate(n, str::String)
-    if n % alphabet_length == 0 || isempty(str)
-        return str 
-    end
-
     shifted_str = ""
     for c in str
-        shifted_str = string(shifted_str, rotate(n, c))  
+        if isuppercase(Char(c))
+            shifted_str = string(shifted_str, rotate(n, c))
+        elseif islowercase(Char(c))
+            shifted_str = string(shifted_str, rotate(n, c))
+        else
+            shifted_str = string(shifted_str, c)
+        end        
     end
     shifted_str
 end
 
 function rotate(n, c::Char)
     if isuppercase(c)
-        (c - 'A' + n) % alphabet_length + 'A'
+        Char((Int(c) - Int('A') + n) % 26 + Int('A'))
     elseif islowercase(c)
-        (c - 'a' + n) % alphabet_length + 'a'
+        Char((Int(c) - Int('a') + n) % 26 + Int('a'))
     else
         c
     end        
