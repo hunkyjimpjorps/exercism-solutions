@@ -6,11 +6,10 @@ pub opaque type Set(t) {
 }
 
 pub fn new(members: List(t)) -> Set(t) {
-  Set(
-    members
-    |> list.map(fn(m) { #(m, True) })
-    |> map.from_list(),
-  )
+  members
+  |> list.map(fn(m) { #(m, True) })
+  |> map.from_list()
+  |> Set()
 }
 
 pub fn is_empty(set: Set(t)) -> Bool {
@@ -24,14 +23,14 @@ pub fn contains(in set: Set(t), this member: t) -> Bool {
 pub fn is_subset(first: Set(t), of second: Set(t)) -> Bool {
   list.all(
     in: keys(first.contents),
-    satisfying: list.contains(keys(second.contents), _),
+    satisfying: map.has_key(second.contents, _),
   )
 }
 
 pub fn disjoint(first: Set(t), second: Set(t)) -> Bool {
   !list.any(
     in: keys(first.contents),
-    satisfying: list.contains(keys(second.contents), _),
+    satisfying: map.has_key(second.contents, _),
   )
 }
 
@@ -44,20 +43,16 @@ pub fn add(to set: Set(t), this member: t) -> Set(t) {
 }
 
 pub fn intersection(of first: Set(t), and second: Set(t)) -> Set(t) {
-  list.filter(keys(first.contents), list.contains(keys(second.contents), _))
-  |> new()
+  map.filter(first.contents, fn(c, _) { map.has_key(second.contents, c) })
+  |> Set()
 }
 
 pub fn difference(between first: Set(t), and second: Set(t)) -> Set(t) {
-  list.filter(
-    keys(first.contents),
-    fn(c) { !list.contains(keys(second.contents), c) },
-  )
-  |> new()
+  map.filter(first.contents, fn(c, _) { !map.has_key(second.contents, c) })
+  |> Set()
 }
 
 pub fn union(of first: Set(t), and second: Set(t)) -> Set(t) {
   map.merge(first.contents, second.contents)
-  |> keys()
-  |> new()
+  |> Set()
 }
