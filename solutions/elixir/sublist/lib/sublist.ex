@@ -12,7 +12,7 @@ defmodule Sublist do
     end
   end
 
-  defp sublist?(a, []), do: false
+  defp sublist?(_, []), do: false
   defp sublist?(a, b = [_ | rest]) do
     if List.starts_with?(b, a) do
       true
