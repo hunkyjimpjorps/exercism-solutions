@@ -14,15 +14,25 @@ defmodule MatchingBrackets do
   defguardp is_matching_brackets(l, r)
             when (l == "(" and r == ")") or (l == "[" and r == "]") or (l == "{" and r == "}")
 
-  defp do_check_brackets([], []), do: true
+  defp do_check_brackets(str, acc) do
+    case {str, acc} do
+      {[], []} ->
+        true
 
-  defp do_check_brackets([h | t], acc) when is_opening_bracket(h) do
-    do_check_brackets(t, [h | acc])
+      {[], _} ->
+        false
+
+      {[h | t], []} when is_opening_bracket(h) ->
+        do_check_brackets(t, [h])
+
+      {[h | t], acc} when is_opening_bracket(h) ->
+        do_check_brackets(t, [h | acc])
+
+      {[h | t], [acc_h | acc_t]} when is_matching_brackets(acc_h, h) ->
+        do_check_brackets(t, acc_t)
+
+      _ ->
+        false
+    end
   end
-
-  defp do_check_brackets([h | t], [acc_h | acc_t]) when is_matching_brackets(acc_h, h) do
-    do_check_brackets(t, acc_t)
-  end
-
-  defp do_check_brackets(_, _), do: false
 end
