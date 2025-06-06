@@ -16,8 +16,7 @@ end
 
 function decode(input)
     @pipe input |>
-        lowercase |>
-        replace(_, r"[^0-9a-z]" => "") |>
+        replace(_, " " => "") |>
         map(c -> get(cipher, c, c), _)
 end
 
