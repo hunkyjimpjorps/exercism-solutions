@@ -24,8 +24,7 @@ defmodule Frequency do
 
     letters
     |> Enum.chunk_every(chunk_length)
-    |> Enum.map(&Task.async(fn -> Enum.frequencies(&1) end))
-    |> Enum.map(&Task.await(&1))
+    |> Task.async_stream(&Enum.frequencies/1)
     |> Enum.reduce(&Map.merge(&1, &2, fn _, v1, v2 -> v1 + v2 end))
   end
 end
