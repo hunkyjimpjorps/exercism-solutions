@@ -24,20 +24,14 @@ defmodule RPG do
   end
 
   defimpl Edible, for: LoafOfBread do
-    def eat(%LoafOfBread{}, %Character{health: h} = char) do
-      {nil, %{char | health: h + 5}}
-    end
+    def eat(bread, char), do: {nil, Map.update!(char, :health, &(&1 + 5))}
   end
 
   defimpl Edible, for: ManaPotion do
-    def eat(%ManaPotion{strength: m}, %Character{mana: mana} = char) do
-      {%EmptyBottle{}, %{char | mana: mana + m}}
-    end
+    def eat(potion, char), do: {%EmptyBottle{}, Map.update!(char, :mana, &(&1 + potion.strength))}
   end
 
   defimpl Edible, for: Poison do
-    def eat(%Poison{}, char) do
-      {%EmptyBottle{}, %{char | health: 0}}
-    end  
+    def eat(_, char), do: {%EmptyBottle{}, %{char | health: 0}}
   end
 end
