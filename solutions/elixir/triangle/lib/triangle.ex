@@ -20,10 +20,10 @@ defmodule Triangle do
     do: {:error, "side lengths violate triangle inequality"}
 
   def kind(a, b, c) do
-    case [a, b, c] |> Enum.uniq() |> Enum.count() do
-      1 -> {:ok, :equilateral}
-      2 -> {:ok, :isosceles}
-      3 -> {:ok, :scalene}
+    case [a, b, c] do
+      [n, n, n] -> {:ok, :equilateral}
+      [m, n, p] when m == n or n == p or m == p -> {:ok, :isosceles}
+      _ -> {:ok, :scalene}
     end
   end
 end
