@@ -7,7 +7,10 @@ defmodule BirdCount do
 
   def has_day_without_birds?(list), do: 0 in list
 
-  def total(list), do: Enum.sum(list)
+  def total([]), do: 0
+  def total([today | rest]), do: today + total(rest)
 
-  def busy_days(list), do: Enum.filter(list, &(&1 >= 5)) |> length()
+  def busy_days([]), do: 0
+  def busy_days([today | rest]) when today >= 5, do: 1 + busy_days(rest)
+  def busy_days([_ | rest]), do: busy_days(rest)
 end
