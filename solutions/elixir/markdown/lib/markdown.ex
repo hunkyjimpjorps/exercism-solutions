@@ -23,10 +23,10 @@ defmodule Markdown do
     |> tag_list_items()
   end
 
-  defp process("*" <> _ = t), do: t |> parse_list_md_level()
-  defp process("#######" <> _ = t), do: t |> enclose_with_paragraph_tag()
-  defp process("#" <> _ = t), do: t |> parse_header_md_level() |> enclose_with_header_tag()
-  defp process(t), do: t |> enclose_with_paragraph_tag()
+  defp process("*" <> _ = t), do: parse_list_md_level(t)
+  defp process("#######" <> _ = t), do: enclose_with_paragraph_tag(t)
+  defp process("#" <> _ = t), do: parse_header_md_level(t) |> enclose_with_header_tag()
+  defp process(t), do: enclose_with_paragraph_tag(t)
 
   defp parse_header_md_level(hwt) do
     [h, t] = String.split(hwt, " ", parts: 2)
