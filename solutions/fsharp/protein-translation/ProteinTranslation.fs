@@ -1,7 +1,6 @@
 ﻿module ProteinTranslation
 
 type Codon = C of string
-
 type Protein =
     | STOP
     | P of string
@@ -32,15 +31,15 @@ let proteins (rna: string) : string list =
         | "" -> []
         | sSub -> C sSub :: (parseCodons s.[3..])
 
-    let rec identifyCodons (c: Codon list) : string list =
-        match c with
+    let rec identifyCodons (s: Codon list) : string list =
+        match s with
         | [] -> []
         | head :: tail ->
             match codonMap.TryFind(head) with
-            | Some protein ->
-                match protein with
+            | Some codon ->
+                match codon with
                 | STOP -> []
-                | P name -> name :: (identifyCodons tail)
+                | P codon -> codon :: (identifyCodons tail)
             | None -> invalidArg "codon" "Invalid codon"
 
     identifyCodons (parseCodons rna)
