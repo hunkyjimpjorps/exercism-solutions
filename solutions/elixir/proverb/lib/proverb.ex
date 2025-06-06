@@ -9,8 +9,8 @@ defmodule Proverb do
     |> Enum.join("\n")
   end
 
-  def pairs([_]), do: []
-  def pairs([first, second | rest]) do
+  defp pairs([_]), do: []
+  defp pairs([first, second | rest]) do
     ["For want of a #{first} the #{second} was lost." | pairs([second | rest])]
   end
 
