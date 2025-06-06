@@ -4,6 +4,7 @@ import gleam/order.{Eq, Order}
 import gleam/string
 import gleam/list
 import gleam/int
+import gleam/result
 
 type League =
   Map(String, Stats)
@@ -12,43 +13,59 @@ type Stats {
   Stats(mp: Int, w: Int, d: Int)
 }
 
+type ParsingError {
+  InvalidGameFormat
+  InvalidGameResult
+}
+
 const header = "Team                           | MP |  W |  D |  L |  P"
 
 pub fn tally(input: String) -> String {
   input
   |> string.split(on: "\n")
-  |> list.fold(from: new_league(), with: add_next_result)
-  |> map.to_list()
-  |> list.sort(compare_teams)
-  |> list.map(display_stats)
-  |> list.prepend(header)
-  |> string.join("\n")
+  |> list.try_fold(from: new_league(), with: add_next_result)
+  |> result.map(fn(teams) {
+    teams
+    |> map.to_list()
+    |> list.sort(compare_teams)
+    |> list.map(display_stats)
+    |> list.prepend(header)
+    |> string.join("\n")
+  })
+  // pipe would end here if the tests would accept Result(String, _)
+  |> result.unwrap(or: "invalid parsing handling goes here")
 }
 
 fn new_league() -> League {
   map.new()
 }
 
-fn add_next_result(league: League, match: String) -> League {
+fn add_next_result(
+  league: League,
+  match: String,
+) -> Result(League, ParsingError) {
   case string.split(match, on: ";") {
-    [""] -> league
+    [""] -> Ok(league)
     [home, away, result] ->
       case result {
         "win" ->
           league
           |> map.update(home, win)
           |> map.update(away, loss)
+          |> Ok()
         "loss" ->
           league
           |> map.update(home, loss)
           |> map.update(away, win)
+          |> Ok()
         "draw" ->
           league
           |> map.update(home, draw)
           |> map.update(away, draw)
-        _ -> panic as "Unknown game result"
+          |> Ok()
+        _ -> Error(InvalidGameResult)
       }
-    _ -> panic as "Unknown game format"
+    _ -> Error(InvalidGameFormat)
   }
 }
 
