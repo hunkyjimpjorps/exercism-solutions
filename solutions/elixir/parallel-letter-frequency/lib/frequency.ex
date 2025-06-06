@@ -20,11 +20,13 @@ defmodule Frequency do
   defp parallel_freq([], _), do: %{}
 
   defp parallel_freq(letters, workers) do
-    chunk_length = ceil(Enum.count(letters) / workers)
-
     letters
-    |> Enum.chunk_every(chunk_length)
+    |> Enum.chunk_every(ceil(Enum.count(letters) / workers))
     |> Task.async_stream(&Enum.frequencies/1)
-    |> Enum.reduce(&Map.merge(&1, &2, fn _, v1, v2 -> v1 + v2 end))
+    |> Enum.reduce(%{}, &merge_async_results/2)
+  end
+
+  defp merge_async_results({:ok, map}, acc) do
+    Map.merge(map, acc, fn _, a, b -> a + b end)
   end
 end
