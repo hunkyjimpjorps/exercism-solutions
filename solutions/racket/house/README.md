@@ -1,15 +1,17 @@
 # House
 
+Welcome to House on Exercism's Racket Track.
+If you need help running the tests or submitting your code, check out `HELP.md`.
+
+## Instructions
+
 Recite the nursery rhyme 'This is the House that Jack Built'.
 
-> [The] process of placing a phrase of clause within another phrase of
-> clause is called embedding. It is through the processes of recursion
-> and embedding that we are able to take a finite number of forms (words
-> and phrases) and construct an infinite number of expressions.
-> Furthermore, embedding also allows us to construct an infinitely long
-> structure, in theory anyway.
+> [The] process of placing a phrase of clause within another phrase of clause is called embedding.
+> It is through the processes of recursion and embedding that we are able to take a finite number of forms (words and phrases) and construct an infinite number of expressions.
+> Furthermore, embedding also allows us to construct an infinitely long structure, in theory anyway.
 
-- [papyr.com](http://papyr.com/hypertextbooks/grammar/ph_noun.htm)
+- [papyr.com][papyr]
 
 The nursery rhyme reads as follows:
 
@@ -105,33 +107,18 @@ that ate the malt
 that lay in the house that Jack built.
 ```
 
-* * * *
-
-For installation and learning resources, refer to the
-[exercism Racket page](http://exercism.io/languages/racket).
-
-You can run the provided tests through DrRacket, or via the command line.
-
-To run the test through DrRacket, simply open the test file and click the 'Run' button in the upper right.
-
-To run the test from the command line, run the test from the exercise directory with the following command:
-
-```
-raco test house-test.rkt
-```
-
-which will display the following:
-
-```
-raco test: (submod "house-test.rkt" test)
-2 success(es) 0 failure(s) 0 error(s) 2 test(s) run
-0
-2 tests passed
-```
+[papyr]: https://papyr.com/hypertextbooks/grammar/ph_noun.htm
 
 ## Source
 
-British nursery rhyme [http://en.wikipedia.org/wiki/This_Is_The_House_That_Jack_Built](http://en.wikipedia.org/wiki/This_Is_The_House_That_Jack_Built)
+### Created by
 
-## Submitting Incomplete Solutions
-It's possible to submit an incomplete solution so you can see how others have completed the exercise.
+- @serialhex
+
+### Contributed to by
+
+- @kytrinyx
+
+### Based on
+
+British nursery rhyme - https://en.wikipedia.org/wiki/This_Is_The_House_That_Jack_Built
