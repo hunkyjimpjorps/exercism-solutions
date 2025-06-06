@@ -35,9 +35,9 @@ pub fn send_newsletter(
   let assert Ok(emails) = read_emails(emails_path)
 
   {
-    use e <- list.map(emails)
-    use _ <- result.try(send_email(e))
-    let assert Ok(_) = log_sent_email(log_path, e)
+    use email <- list.each(emails)
+    use _ <- result.try(send_email(email))
+    let assert Ok(_) = log_sent_email(log_path, email)
   }
   Ok(Nil)
 }
