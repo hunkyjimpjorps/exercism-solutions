@@ -1,23 +1,14 @@
 using MLStyle
 using MLStyle.AbstractPatterns: literal
-import Base: +
 
-@enum Heading begin
-    NORTH
-    EAST
-    WEST
-    SOUTH
-end
-
-MLStyle.is_enum(::Heading) = true
-MLStyle.pattern_uncall(d::Heading, _, _, _, _) = literal(d)
+@enum Heading NORTH EAST WEST SOUTH
+is_enum(::Heading) = true
+pattern_uncall(dir::Heading, _, _, _, _) = literal(dir)
 
 struct Point{T}
     x::T
     y::T
 end
-
-+(point::Point, step::Point) = Point(point.x + step.x, point.y + step.y)
 
 mutable struct Robot
     position::Point{Int}
@@ -35,34 +26,37 @@ function heading(robot::Robot)
 end
 
 function turn_right!(robot::Robot)
-    robot.heading = @match robot.heading begin
-        NORTH => EAST
-        EAST => SOUTH
-        SOUTH => WEST
-        WEST => NORTH
+    h = @match robot.heading begin
+        0 => EAST
+        1 => SOUTH
+        2 => WEST
+        3 => NORTH
+        _ => throw(DomainError(robot.heading))
     end
-    return robot
+    return Robot(robot.position, h)
 end
 
 function turn_left!(robot::Robot)
-    robot.heading = @match robot.heading begin
-        NORTH => WEST
-        EAST => NORTH
-        SOUTH => EAST
-        WEST => SOUTH
+    h = @match robot.heading begin
+        0 => WEST
+        1 => NORTH
+        2 => EAST
+        3 => SOUTH
+        _ => throw(DomainError(robot.heading))
     end
-    return robot
+    return Robot(robot.position, h)
 end
 
 function advance!(robot::Robot)
     unit = one(robot.position.x)
-    robot.position = @match robot.heading begin
-        NORTH => robot.position + Point(0, unit)
-        EAST => robot.position + Point(unit, 0)
-        SOUTH => robot.position + Point(0, -unit)
-        WEST => robot.position + Point(-unit, 0)
+    p = @match robot.heading begin
+        NORTH => Point(robot.position.x, robot.position.y + unit)
+        EAST => Point(robot.position.x + unit, robot.position.y)
+        SOUTH => Point(robot.position.x, robot.position.y - unit)
+        WEST => Point(robot.position.x - unit, robot.position.y)
+        _ => throw(DomainError(robot.heading))
     end
-    return robot
+    return Robot(p, robot.heading)
 end
 
 function move!(robot::Robot, directions::AbstractString)
