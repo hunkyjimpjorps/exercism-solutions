@@ -25,7 +25,11 @@ pub fn yen(amount: Int) -> Money(Jpy) {
 pub fn total(prices: List(Money(currency))) -> Money(currency) {
   list.fold(
     over: prices,
-    from: Money(0),
-    with: fn(total, m) { Money(total.value + m.value) },
+    from: 0,
+    with: fn(total, m) {
+      let assert Money(amt) = m
+      total + amt
+    },
   )
+  |> Money()
 }
