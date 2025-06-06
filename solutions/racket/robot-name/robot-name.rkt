@@ -14,10 +14,8 @@
   (set-clear! robot-name-cache))
 
 ; recursively call the name generation function until we get a unique name
-; this will become really inefficient when the namespace's almost exhausted
+; this is going to become really inefficient when the namespace's almost exhausted
 ; but for now it'll do
-; maybe it'd be better to generate all the possible names ahead of time and assign them
-; one by one until they're exhausted
 (define (generate-new-random-name)
   (define candidate (string (random-letter-char)
                             (random-letter-char)
