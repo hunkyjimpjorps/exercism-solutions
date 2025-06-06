@@ -35,7 +35,7 @@ pub fn plants(diagram: String, student: Student) -> List(Plant) {
   |> list.transpose()
   |> list.map(fn(strs) {
     strs
-    |> list.concat()
+    |> list.flatten()
     |> list.map(to_plant)
   })
   |> list.zip(roster, _)
@@ -64,5 +64,6 @@ fn to_plant(str: String) -> Plant {
     "C" -> Clover
     "V" -> Violets
     "G" -> Grass
+    _ -> panic
   }
 }
