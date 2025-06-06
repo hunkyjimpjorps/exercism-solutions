@@ -23,7 +23,6 @@ defmodule PhoneNumber do
   end
 
   defp check_length_and_prefix(phone) do
-    IO.inspect(phone)
     case phone do
       <<"1", n::binary-size(10)>> -> {:ok, n}
       <<n::binary-size(10)>> -> {:ok, n}
