@@ -2,7 +2,7 @@ import gleam/int
 import gleam/list
 import gleam/string
 import gleam/result
-import gleam/regex.{Match}
+import gleam/regexp.{Match}
 import gleam/option.{None, Some}
 
 pub type Error {
@@ -32,11 +32,11 @@ pub fn answer(question: String) -> Result(Int, Error) {
 }
 
 fn is_valid_question_format(question: String) -> Result(String, Error) {
-  let assert Ok(re) = regex.from_string("^What is\\s?(.*)\\?$")
-  case regex.scan(with: re, content: question) {
-    [] -> Error(UnknownOperation)
+  let assert Ok(re) = regexp.from_string("^What is\\s?(.*)\\?$")
+  case regexp.scan(with: re, content: question) {
     [Match(submatches: [None], ..)] -> Error(SyntaxError)
     [Match(submatches: [Some(str)], ..)] -> Ok(str)
+    _ -> Error(UnknownOperation)
   }
 }
 
