@@ -57,7 +57,7 @@ pub fn difference(between first: Set(t), and second: Set(t)) -> Set(t) {
 }
 
 pub fn union(of first: Set(t), and second: Set(t)) -> Set(t) {
-  list.append(keys(first.contents), keys(second.contents))
-  |> list.unique()
+  map.merge(first.contents, second.contents)
+  |> keys()
   |> new()
 }
