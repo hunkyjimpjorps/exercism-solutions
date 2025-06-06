@@ -28,6 +28,9 @@ defmodule SpaceAge do
   """
   @spec age_on(planet, pos_integer) :: float
   def age_on(planet, seconds) do
-    seconds / @seconds_per_year / @conversion[planet]
+    case @conversion[planet] do
+      nil -> {:error, "not a planet"}
+      factor -> {:ok, seconds / @seconds_per_year / factor}
+    end
   end
 end
