@@ -4,7 +4,8 @@ defmodule ResistorColorDuo do
   Calculate a resistance value from two colors
   """
   @spec value(colors :: [atom]) :: integer
-  def value([tens, ones | _rest]) do
+  def value([tens, ones]) do
     @colors[tens] * 10 + @colors[ones]
   end
+  def value([tens, ones | _rest]), do: value([tens, ones])
 end
