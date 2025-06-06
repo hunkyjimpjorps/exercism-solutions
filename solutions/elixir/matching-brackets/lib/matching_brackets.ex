@@ -19,12 +19,6 @@ defmodule MatchingBrackets do
       {[], []} ->
         true
 
-      {[], _} ->
-        false
-
-      {[h | t], []} when is_opening_bracket(h) ->
-        do_check_brackets(t, [h])
-
       {[h | t], acc} when is_opening_bracket(h) ->
         do_check_brackets(t, [h | acc])
 
