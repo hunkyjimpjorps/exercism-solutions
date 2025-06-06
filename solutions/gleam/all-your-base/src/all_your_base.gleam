@@ -40,15 +40,3 @@ fn base10_to_digits(
     _, _ -> base10_to_digits(n / base, base, [n % base, ..acc])
   }
 }
-
-fn pow(x: Int, n: Int) -> Int {
-  case n {
-    0 -> 1
-    1 -> x
-    n ->
-      case n % 2 {
-        0 -> pow(x * x, n / 2)
-        1 -> x * pow(x, n - 1)
-      }
-  }
-}
