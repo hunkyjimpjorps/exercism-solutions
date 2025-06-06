@@ -10,9 +10,9 @@ defmodule PrimeFactors do
   @spec factors_for(pos_integer) :: [pos_integer]
   def factors_for(number), do: do_factors(number, 2, [])
 
-  def do_factors(1, _, factors), do: Enum.reverse(factors)
+  defp do_factors(1, _, factors), do: Enum.reverse(factors)
 
-  def do_factors(number, divisor, factors) do
+  defp do_factors(number, divisor, factors) do
     if rem(number, divisor) == 0 do
       do_factors(
         div(number, divisor),
