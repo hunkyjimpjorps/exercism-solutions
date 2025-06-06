@@ -22,4 +22,4 @@ let orderPrice (pizzas: Pizza list) : int =
         | [ _; _ ] -> 2
         | _ -> 0
 
-    List.sumBy pizzaPrice pizzas + surcharge
+    List.fold (fun acc p -> acc + pizzaPrice p) surcharge pizzas
