@@ -6,8 +6,6 @@ defmodule KillerSudokuHelper do
   def combinations(%{exclude: exclude, size: size, sum: sum}) do
     Enum.to_list(1..9) -- exclude
     |> combine(size)
-    |> Enum.map(&Enum.sort/1)
-    |> Enum.sort_by(&hd/1)
     |> Enum.filter(&(Enum.sum(&1) == sum))
   end
 
