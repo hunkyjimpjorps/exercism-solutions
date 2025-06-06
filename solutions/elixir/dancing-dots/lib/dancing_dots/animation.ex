@@ -19,7 +19,7 @@ end
 defmodule DancingDots.Flicker do
   use DancingDots.Animation
 
-  def handle_frame(dot, frame_number, opts) do
+  def handle_frame(dot, frame_number, _opts) do
     case rem(frame_number, 4) do
       0 -> %{dot | opacity: 0.5 * dot.opacity}
       _ -> dot
