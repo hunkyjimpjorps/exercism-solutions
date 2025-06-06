@@ -1,6 +1,5 @@
 import gleam/int
 import gleam/list
-import gleam/result
 import gleam/string
 import gleam/map.{type Map}
 
@@ -45,27 +44,26 @@ pub fn format_stack(f: Forth) -> String {
 
 pub fn eval(f: Forth, prog: String) -> Result(Forth, ForthError) {
   prog
-  |> tokenize_input()
-  |> result.map(Forth(program: _, stack: f.stack, definitions: f.definitions))
-  |> result.try(run_program(_))
+  |> tokenize_input
+  |> Forth(program: _, stack: f.stack, definitions: f.definitions)
+  |> run_program(_)
 }
 
-fn tokenize_input(prog: String) -> Result(List(ForthType), ForthError) {
+fn tokenize_input(prog: String) -> List(ForthType) {
   prog
   |> string.uppercase()
   |> string.split(" ")
   |> list.map(identify_token)
-  |> result.all()
 }
 
-fn identify_token(word: String) -> Result(ForthType, ForthError) {
+fn identify_token(word: String) -> ForthType {
   case word {
-    ":" -> Ok(StartDef)
-    ";" -> Ok(EndDef)
+    ":" -> StartDef
+    ";" -> EndDef
     w ->
       case int.parse(w) {
-        Ok(n) -> Ok(Number(n))
-        Error(Nil) -> Ok(Word(w))
+        Ok(n) -> Number(n)
+        Error(Nil) -> Word(w)
       }
   }
 }
