@@ -15,7 +15,7 @@ defmodule PalindromeProducts do
     |> Enum.into(%{})
   end
 
-  def make_products(max_factor, min_factor) do
+  defp make_products(max_factor, min_factor) do
     for i <- min_factor..max_factor,
         j <- i..max_factor,
         palindrome?(i * j) do
@@ -23,7 +23,7 @@ defmodule PalindromeProducts do
     end
   end
 
-  def palindrome?(n) do
+  defp palindrome?(n) do
     forwards = Integer.to_string(n)
     backwards = String.reverse(forwards)
 
