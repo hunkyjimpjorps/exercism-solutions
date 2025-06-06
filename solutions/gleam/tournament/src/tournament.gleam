@@ -46,6 +46,7 @@ fn add_next_result(league: League, match: String) -> League {
           league
           |> map.update(home, draw)
           |> map.update(away, draw)
+        _ -> panic as "Unknown game result"
       }
     _ -> panic as "Unknown game format"
   }
