@@ -1,9 +1,5 @@
 #lang racket
-
 (provide grep)
-
-(define (flags-contain? flags f)
-  (member flags f))
 
 (define (grep flags pattern file-list)
   (define (flags-contain? f)
