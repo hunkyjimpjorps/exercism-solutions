@@ -4,6 +4,7 @@ open FParsec
 
 type Operation = int -> int -> int
 type OperationNode = Operation * int
+type OperationTail = OperationNode list
 
 // parser primitives
 let ws = spaces
@@ -29,9 +30,9 @@ let pSentence =
 let rec parseCaptures =
     function
     | acc, [] -> acc
-    | acc, h : OperationNode :: t ->
-        (fst h) acc (snd h)
-        |> (fun f -> parseCaptures (f, t))
+    | (acc: int), (op, x): OperationNode :: (t: OperationTail) ->
+        op acc x
+        |> (fun result -> parseCaptures (result, t))
 
 let answer (question: string) : int option =
     match run pSentence question with
