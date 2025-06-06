@@ -1,13 +1,13 @@
-import gleam/map.{Map}
-import gleam/option.{None, Option, Some}
-import gleam/order.{Eq, Order}
+import gleam/dict.{type Dict}
+import gleam/option.{None, type Option, Some}
+import gleam/order.{Eq, type Order}
 import gleam/string
 import gleam/list
 import gleam/int
 import gleam/result
 
 type League =
-  Map(String, Stats)
+  Dict(String, Stats)
 
 type Stats {
   Stats(mp: Int, w: Int, d: Int)
@@ -26,7 +26,7 @@ pub fn tally(input: String) -> String {
   |> list.try_fold(from: new_league(), with: add_next_result)
   |> result.map(fn(teams) {
     teams
-    |> map.to_list()
+    |> dict.to_list()
     |> list.sort(compare_teams)
     |> list.map(display_stats)
     |> list.prepend(header)
@@ -37,7 +37,7 @@ pub fn tally(input: String) -> String {
 }
 
 fn new_league() -> League {
-  map.new()
+  dict.new()
 }
 
 fn add_next_result(
@@ -50,18 +50,18 @@ fn add_next_result(
       case result {
         "win" ->
           league
-          |> map.update(home, win)
-          |> map.update(away, loss)
+          |> dict.update(home, win)
+          |> dict.update(away, loss)
           |> Ok()
         "loss" ->
           league
-          |> map.update(home, loss)
-          |> map.update(away, win)
+          |> dict.update(home, loss)
+          |> dict.update(away, win)
           |> Ok()
         "draw" ->
           league
-          |> map.update(home, draw)
-          |> map.update(away, draw)
+          |> dict.update(home, draw)
+          |> dict.update(away, draw)
           |> Ok()
         _ -> Error(InvalidGameResult)
       }
