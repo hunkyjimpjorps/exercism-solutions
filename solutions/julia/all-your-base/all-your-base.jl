@@ -16,11 +16,7 @@ function all_your_base(digits, base_in, base_out)
         zip(_, Iterators.countfrom(0)) |>
         sum(((n, i),) -> n * base_in^i, _) |> 
         to_base_b(_, base_out, Int[]) |>
-        if isempty(_)
-        [0]
-    else
-        identity(_)
-    end
+        (isempty(_) ? [0] : identity(_))
 end
 
 function to_base_b(n, b, acc)
