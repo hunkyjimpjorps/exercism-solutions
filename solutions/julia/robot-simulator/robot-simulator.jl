@@ -1,5 +1,6 @@
 using MLStyle
 using MLStyle.AbstractPatterns: literal
+import Base: +
 
 @enum Heading begin
     NORTH
@@ -15,6 +16,8 @@ struct Point{T}
     x::T
     y::T
 end
+
++(point::Point, step::Point) = Point(point.x + step.x, point.y + step.y)
 
 mutable struct Robot
     position::Point{Int}
@@ -54,10 +57,10 @@ end
 function advance!(robot::Robot)
     unit = one(robot.position.x)
     robot.position = @match robot.heading begin
-        NORTH => Point(robot.position.x, robot.position.y + unit)
-        EAST => Point(robot.position.x + unit, robot.position.y)
-        SOUTH => Point(robot.position.x, robot.position.y - unit)
-        WEST => Point(robot.position.x - unit, robot.position.y)
+        NORTH => robot.position + Point(0, unit)
+        EAST => robot.position + Point(unit, 0)
+        SOUTH => robot.position + Point(0, -unit)
+        WEST => robot.position + Point(-unit, 0)
     end
     return robot
 end
