@@ -1,17 +1,7 @@
 ﻿module Raindrops
 
-type divisor = int * string
-
 let convert (n: int) : string =
-    let divisorSounds : divisor list = [ 3, "Pling"; 5, "Plang"; 7, "Plong" ]
-
-    let isDivisible ((div, sound):divisor) : string option =
-        match n % div with
-        | 0 -> Some sound
-        | _ -> None
-
-    let drops : string =
-        List.choose isDivisible divisorSounds
-        |> String.concat ""
-
+    let drops = (if n % 3 = 0 then "Pling" else "") +
+                (if n % 5 = 0 then "Plang" else "") +
+                (if n % 7 = 0 then "Plong" else "")
     if drops = "" then string n else drops
