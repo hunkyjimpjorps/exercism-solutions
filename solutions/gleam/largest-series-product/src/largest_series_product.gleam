@@ -1,18 +1,18 @@
 import gleam/int
-import gleam/bool
+import gleam/bool.{guard}
 import gleam/list
-import gleam/result
+import gleam/result.{map, try}
 import gleam/string
 
 pub fn largest_product(digits: String, span: Int) -> Result(Int, Nil) {
-  use <- bool.guard(span < 0 || span > string.length(digits), Error(Nil))
-  use <- bool.guard(span == 0, Ok(1))
+  use <- guard(span < 0 || span > string.length(digits), Error(Nil))
+  use <- guard(span == 0, Ok(1))
   int.parse(digits)
-  |> result.try(fn(n) {
+  |> try(fn(n) {
     int.digits(n, 10)
-    |> result.replace_error(Nil)
+    |> result.nil_error()
   })
-  |> result.map(fn(ns) {
+  |> map(fn(ns) {
     list.window(ns, span)
     |> list.map(int.product)
     |> list.fold(0, int.max)
