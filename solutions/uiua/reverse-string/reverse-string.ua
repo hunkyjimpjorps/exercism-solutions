@@ -1,1 +1,1 @@
-ReverseString ← |1.1 reverse
+ReverseString ← |1.1 ⇌
