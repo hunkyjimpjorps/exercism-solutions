@@ -1,20 +1,14 @@
-import gleam/list.{reverse}
-
 pub fn keep(list: List(t), predicate: fn(t) -> Bool) -> List(t) {
-  tco_filter(list, predicate, [])
+  case list {
+    [] -> []
+    [h, ..t] ->
+      case predicate(h) {
+        True -> [h, ..keep(t, predicate)]
+        False -> keep(t, predicate)
+      }
+  }
 }
 
 pub fn discard(list: List(t), predicate: fn(t) -> Bool) -> List(t) {
-  tco_filter(list, fn(x) { !predicate(x) }, [])
-}
-
-fn tco_filter(list: List(t), predicate: fn(t) -> Bool, acc: List(t)) -> List(t) {
-  case list {
-    [] -> reverse(acc)
-    [h, ..t] ->
-      case predicate(h) {
-        True -> tco_filter(t, predicate, [h, ..acc])
-        False -> tco_filter(t, predicate, acc)
-      }
-  }
+  keep(list, fn(x) { !predicate(x) })
 }
