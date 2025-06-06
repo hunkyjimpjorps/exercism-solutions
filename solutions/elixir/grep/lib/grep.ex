@@ -1,39 +1,41 @@
 defmodule Grep do
   @spec grep(String.t(), [String.t()], [String.t()]) :: String.t()
   def grep(pattern, flags, files) do
-    for file <- files,
-        {line, number} <-
-          File.read!(file) |> String.split("\n", trim: true) |> Enum.with_index(1),
-        matches?(line, pattern, flags) do
-      file_text =
-        cond do
-          "-l" in flags -> ""
-          match?([_, _ | _], files) -> file <> ":"
-          true -> ""
-        end
+    many? = match?([_, _ | _], files)
 
-      line_text =
-        cond do
-          "-l" in flags -> ""
-          "-n" in flags -> Integer.to_string(number) <> ":"
-          true -> ""
-        end
-
-      match_text = if "-l" in flags, do: file, else: line
-
-      file_text <> line_text <> match_text <> "\n"
+    for f <- files,
+        {l, n} <- File.read!(f) |> String.split("\n", trim: true) |> Enum.with_index(1),
+        matches?(l, pattern, flags),
+        into: "",
+        uniq: true do
+      "#{file_text(flags, f, many?)}#{line_text(flags, n)}#{match_text(flags, f, l)}\n"
     end
-    |> Enum.dedup()
-    |> Enum.join()
   end
 
   defp matches?(line, pattern, flags) do
-    cond do
-      "-i" in flags and "-x" in flags -> String.downcase(line) == String.downcase(pattern)
-      "-x" in flags -> line == pattern
-      "-i" in flags -> String.downcase(line) =~ String.downcase(pattern)
-      true -> line =~ pattern
-    end
+    [line, pattern]
+    |> then(fn x -> if "-i" in flags, do: Enum.map(x, &String.downcase/1), else: x end)
+    |> then(fn [l, p] -> if "-x" in flags, do: l == p, else: l =~ p end)
     |> then(&if "-v" in flags, do: not &1, else: &1)
+  end
+
+  defp file_text(flags, f, many?) do
+    cond do
+      "-l" in flags -> ""
+      many? -> "#{f}:"
+      true -> ""
+    end
+  end
+
+  defp line_text(flags, n) do
+    cond do
+      "-l" in flags -> ""
+      "-n" in flags -> "#{Integer.to_string(n)}:"
+      true -> ""
+    end
+  end
+
+  defp match_text(flags, f, l) do
+    if "-l" in flags, do: f, else: l
   end
 end
