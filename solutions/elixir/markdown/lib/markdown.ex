@@ -10,6 +10,11 @@ defmodule Markdown do
       iex> Markdown.parse("# Header!\\n* __Bold Item__\\n* _Italic Item_")
       "<h1>Header!</h1><ul><li><strong>Bold Item</strong></li><li><em>Italic Item</em></li></ul>"
   """
+
+  @regex_strong ~r[__(.+)__]
+  @regex_list ~r[<li>.*</li>]
+  @regex_em ~r[_(.+)_]
+
   @spec parse(String.t()) :: String.t()
   def parse(m) do
     m
@@ -18,21 +23,10 @@ defmodule Markdown do
     |> tag_list_items()
   end
 
-  defp process(t) do
-    cond do
-      String.starts_with?(t, "*") ->
-        t |> parse_list_md_level()
-
-      String.starts_with?(t, "#######") ->
-        t |> enclose_with_paragraph_tag()
-
-      String.starts_with?(t, "#") ->
-        t |> parse_header_md_level() |> enclose_with_header_tag()
-
-      true ->
-        t |> enclose_with_paragraph_tag()
-    end
-  end
+  defp process("*" <> _ = t), do: t |> parse_list_md_level()
+  defp process("#######" <> _ = t), do: t |> enclose_with_paragraph_tag()
+  defp process("#" <> _ = t), do: t |> parse_header_md_level() |> enclose_with_header_tag()
+  defp process(t), do: t |> enclose_with_paragraph_tag()
 
   defp parse_header_md_level(hwt) do
     [h, t] = String.split(hwt, " ", parts: 2)
@@ -48,11 +42,11 @@ defmodule Markdown do
   defp enclose_with_paragraph_tag(w), do: "<p>#{replace_md_with_tag(w)}</p>"
 
   defp replace_md_with_tag(w) do
-    String.replace(w, ~r[__(.+)__], "<strong>\\g{1}</strong>")
-    |> String.replace(~r[_(.+)_], "<em>\\g{1}</em>")
+    String.replace(w, @regex_strong, "<strong>\\g{1}</strong>")
+    |> String.replace(@regex_em, "<em>\\g{1}</em>")
   end
 
   defp tag_list_items(l) do
-    String.replace(l, ~r[<li>.*</li>], "<ul>\\g{0}</ul>")
+    String.replace(l, @regex_list, "<ul>\\g{0}</ul>")
   end
 end
