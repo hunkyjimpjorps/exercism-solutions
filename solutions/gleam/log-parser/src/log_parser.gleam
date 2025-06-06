@@ -15,7 +15,7 @@ pub fn split_line(line: String) -> List(String) {
 pub fn tag_with_user_name(line: String) -> String {
   let assert Ok(find_username) = regex.from_string("User\\s+(\\S*)")
   case regex.scan(line, with: find_username) {
-    [Match(content: _, submatches: [Some(s)])] -> "[USER] " <> s <> " " <> line
+    [Match(submatches: [Some(s)], ..)] -> "[USER] " <> s <> " " <> line
     [] -> line
   }
 }
