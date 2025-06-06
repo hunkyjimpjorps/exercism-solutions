@@ -22,8 +22,7 @@ defmodule AffineCipher do
       |> String.downcase()
       |> then(&for <<c <- &1>>, do: <<encode_letter(a, b, c)>>)
       |> Enum.chunk_every(5)
-      |> Enum.map(&Enum.join/1)
-      |> Enum.join(" ")
+      |> Enum.map_join(&Enum.join/1)
       |> ok()
     end
   end
@@ -40,8 +39,7 @@ defmodule AffineCipher do
     else
       encrypted
       |> String.replace(~r/[^[:alnum:]]/, "")
-      |> then(&for <<c <- &1>>, do: <<decode_letter(inv_a, b, c)>>)
-      |> Enum.join()
+      |> then(&for <<c <- &1>>, into: "", do: <<decode_letter(inv_a, b, c)>>)
       |> ok()
     end
   end
