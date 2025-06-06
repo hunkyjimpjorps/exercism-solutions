@@ -86,8 +86,6 @@ defmodule Poker do
   defp compare_hands({type1, _}, {type2, _}) when type1 != type2 do
     @hands[type1] >= @hands[type2]
   end
-
-  defp compare_hands({type, a}, {type, b}), do: a >= b
   defp compare_hands({type, []}, {type, []}), do: true
 
   defp compare_hands({type, [a | rest_a]}, {type, [b | rest_b]}) do

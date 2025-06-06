@@ -6,12 +6,7 @@ defmodule PokerHands do
       (Enum.max(ranks) - Enum.min(ranks) == 4 && Enum.uniq(ranks) == ranks)
   end
 
-  def flush?(hand) do
-    hand
-    |> suits()
-    |> length()
-    |> then(&(&1 == 1))
-  end
+  def flush?(hand), do: length(suits(hand)) == 1
 
   def two_pair?(hand) do
     [1, 2, 2] == hand |> ranks |> Enum.frequencies() |> Map.values() |> Enum.sort()
@@ -31,9 +26,9 @@ defmodule PokerHands do
 
   defp high_card(hand) do
     if ranks(hand) == [14, 5, 4, 3, 2] do
-      5
+      [5]
     else
-      hand |> ranks() |> hd()
+      [hd(ranks(hand))]
     end
   end
 
