@@ -4,20 +4,13 @@ defmodule LibraryFees do
   end
 
   def before_noon?(datetime) do
-    Time.compare(datetime, ~T[12:00:00])
-    |> Kernel.==(:lt)
+    Time.compare(datetime, ~T[12:00:00]) == :lt
   end
 
   def return_date(checkout_datetime) do
-    days =
-      case before_noon?(checkout_datetime) do
-        true -> 28
-        false -> 29
-      end
-
     checkout_datetime
     |> NaiveDateTime.to_date()
-    |> Date.add(days)
+    |> Date.add(if before_noon?(checkout_datetime), do: 28, else: 29)
   end
 
   def days_late(planned_return_date, actual_return_datetime) do
