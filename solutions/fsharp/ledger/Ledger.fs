@@ -11,7 +11,7 @@ type Localization =
       nameChange: string
       currency: string }
 
-let locales : Map<string, Localization> =
+let locales =
     [ ("en-US",
        { cultureIdentifier = "en-US"
          dateFormat = "MM\/dd\/yyyy"
@@ -28,7 +28,7 @@ let locales : Map<string, Localization> =
          currency = "¤ #,#0.00 ;¤ -#,#0.00" }) ]
     |> Map.ofList
 
-let currencyFormats : Map<string, string> =
+let currencyFormats =
     [ ("USD", "$"); ("EUR", "€") ] |> Map.ofList
 
 type Entry =
@@ -41,17 +41,18 @@ let mkEntry date description change =
       des = description
       chg = change }
 
-let formatLedger (currency: string) (loc: string) (entries: Entry list) : string =
+let formatLedger currency loc entries =
 
-    let formatDate (d: DateTime) : string = d.ToString(locales.[loc].dateFormat)
+    let formatDate x =
+        x.dat.ToString(locales.[loc].dateFormat)
 
-    let trimDes (s: string) : string =
-        match s.Length with
-        | n when n > 25 -> s.[0..21] + "..."
-        | _ -> s
+    let trimDes x =
+        match x.des.Length with
+        | n when n > 25 -> x.des.[0..21] + "..."
+        | _ -> x.des
 
-    let formatCurrency (n: int) : string =
-        let c = float n / 100.0
+    let formatCurrency x =
+        let c = float x.chg / 100.0
 
         let currencyFormat =
             locales.[loc]
@@ -59,8 +60,8 @@ let formatLedger (currency: string) (loc: string) (entries: Entry list) : string
 
         $"""{c.ToString(currencyFormat, new CultureInfo(loc))}"""
 
-    let formatLine (x: Entry) : string =
-        $"{formatDate x.dat} | {trimDes x.des, -25} | {formatCurrency x.chg, 13}"
+    let formatLine x =
+        $"{formatDate x} | {trimDes x, -25} | {formatCurrency x, 13}"
 
     entries
     |> List.sortBy (fun x -> x.dat, x.des, x.chg)
