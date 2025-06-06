@@ -17,8 +17,5 @@ defmodule Accumulate do
 
   @spec accumulate(list, (any -> any)) :: list
   def accumulate([], _f), do: []
-
-  def accumulate([head | tail], f) do
-    [f.(head) | accumulate(tail, f)]
-  end
+  def accumulate([head | tail], f), do: [f.(head) | accumulate(tail, f)]
 end
