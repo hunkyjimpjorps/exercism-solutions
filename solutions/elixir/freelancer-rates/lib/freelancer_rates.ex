@@ -8,10 +8,10 @@ defmodule FreelancerRates do
   end
 
   def monthly_rate(hourly_rate, discount) do
-    daily_rate(hourly_rate) * 22 * (1 - discount / 100) |> ceil
+    daily_rate(apply_discount(hourly_rate, discount)) * 22 |> ceil
   end
 
   def days_in_budget(budget, hourly_rate, discount) do
-    Float.floor(budget / (daily_rate(hourly_rate) * (1 - discount / 100)), 1)
+    Float.floor(budget / daily_rate(apply_discount(hourly_rate, discount)), 1)
   end
 end
