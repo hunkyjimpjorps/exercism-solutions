@@ -1,6 +1,4 @@
-import gleam/bit_string
 import gleam/list
-import gleam/result
 
 pub type Nucleotide {
   Adenine
@@ -36,27 +34,21 @@ pub fn encode(dna: List(Nucleotide)) -> BitString {
   )
 }
 
-fn bit_string_to_int_list(
+fn bit_string_to_nucleotide_list(
   bs: BitString,
   base: Int,
-  acc: Result(List(Int), Nil),
-) -> Result(List(Int), Nil) {
+  acc: List(Nucleotide),
+) -> Result(List(Nucleotide), Nil) {
   case bs {
-    <<>> -> result.map(acc, list.reverse)
-    <<head:size(base), rest:bit_string>> ->
-      bit_string_to_int_list(
-        rest,
-        base,
-        result.map(acc, list.prepend(to: _, this: head)),
-      )
+    <<>> -> Ok(list.reverse(acc))
+    <<head:size(base), rest:bit_string>> -> {
+      let assert Ok(b) = decode_nucleotide(head)
+      bit_string_to_nucleotide_list(rest, base, list.prepend(acc, this: b))
+    }
     _ -> Error(Nil)
   }
 }
 
 pub fn decode(dna: BitString) -> Result(List(Nucleotide), Nil) {
-  let is = bit_string_to_int_list(dna, 2, Ok([]))
-  use xs <- result.map(is)
-  use x <- list.map(xs)
-  let assert Ok(b) = decode_nucleotide(x)
-  b
+  bit_string_to_nucleotide_list(dna, 2, [])
 }
