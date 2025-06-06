@@ -1,4 +1,4 @@
-import gleam/map.{type Map}
+import gleam/map.{Map, keys}
 import gleam/list
 
 pub opaque type Set(t) {
@@ -6,10 +6,11 @@ pub opaque type Set(t) {
 }
 
 pub fn new(members: List(t)) -> Set(t) {
-  members
-  |> list.map(fn(m) { #(m, True) })
-  |> map.from_list()
-  |> Set()
+  Set(
+    members
+    |> list.map(fn(m) { #(m, True) })
+    |> map.from_list(),
+  )
 }
 
 pub fn is_empty(set: Set(t)) -> Bool {
@@ -22,15 +23,15 @@ pub fn contains(in set: Set(t), this member: t) -> Bool {
 
 pub fn is_subset(first: Set(t), of second: Set(t)) -> Bool {
   list.all(
-    in: map.keys(first.contents),
-    satisfying: map.has_key(second.contents, _),
+    in: keys(first.contents),
+    satisfying: list.contains(keys(second.contents), _),
   )
 }
 
 pub fn disjoint(first: Set(t), second: Set(t)) -> Bool {
   !list.any(
-    in: map.keys(first.contents),
-    satisfying: map.has_key(second.contents, _),
+    in: keys(first.contents),
+    satisfying: list.contains(keys(second.contents), _),
   )
 }
 
@@ -43,16 +44,20 @@ pub fn add(to set: Set(t), this member: t) -> Set(t) {
 }
 
 pub fn intersection(of first: Set(t), and second: Set(t)) -> Set(t) {
-  map.filter(first.contents, fn(c, _) { map.has_key(second.contents, c) })
-  |> Set()
+  list.filter(keys(first.contents), list.contains(keys(second.contents), _))
+  |> new()
 }
 
 pub fn difference(between first: Set(t), and second: Set(t)) -> Set(t) {
-  map.filter(first.contents, fn(c, _) { !map.has_key(second.contents, c) })
-  |> Set()
+  list.filter(
+    keys(first.contents),
+    fn(c) { !list.contains(keys(second.contents), c) },
+  )
+  |> new()
 }
 
 pub fn union(of first: Set(t), and second: Set(t)) -> Set(t) {
-  map.merge(first.contents, second.contents)
-  |> Set()
+  list.append(keys(first.contents), keys(second.contents))
+  |> list.unique()
+  |> new()
 }
