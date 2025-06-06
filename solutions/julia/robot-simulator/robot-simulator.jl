@@ -1,9 +1,15 @@
 using MLStyle
 using MLStyle.AbstractPatterns: literal
 
-@enum Heading NORTH EAST WEST SOUTH
-is_enum(::Heading) = true
-pattern_uncall(dir::Heading, _, _, _, _) = literal(dir)
+@enum Heading begin
+    NORTH
+    EAST
+    WEST
+    SOUTH
+end
+
+MLStyle.is_enum(::Heading) = true
+MLStyle.pattern_uncall(d::Heading, _, _, _, _) = literal(d)
 
 struct Point{T}
     x::T
@@ -26,37 +32,34 @@ function heading(robot::Robot)
 end
 
 function turn_right!(robot::Robot)
-    h = @match robot.heading begin
-        0 => EAST
-        1 => SOUTH
-        2 => WEST
-        3 => NORTH
-        _ => throw(DomainError(robot.heading))
+    robot.heading = @match robot.heading begin
+        NORTH => EAST
+        EAST => SOUTH
+        SOUTH => WEST
+        WEST => NORTH
     end
-    return Robot(robot.position, h)
+    return robot
 end
 
 function turn_left!(robot::Robot)
-    h = @match robot.heading begin
-        0 => WEST
-        1 => NORTH
-        2 => EAST
-        3 => SOUTH
-        _ => throw(DomainError(robot.heading))
+    robot.heading = @match robot.heading begin
+        NORTH => WEST
+        EAST => NORTH
+        SOUTH => EAST
+        WEST => SOUTH
     end
-    return Robot(robot.position, h)
+    return robot
 end
 
 function advance!(robot::Robot)
     unit = one(robot.position.x)
-    p = @match robot.heading begin
+    robot.position = @match robot.heading begin
         NORTH => Point(robot.position.x, robot.position.y + unit)
         EAST => Point(robot.position.x + unit, robot.position.y)
         SOUTH => Point(robot.position.x, robot.position.y - unit)
         WEST => Point(robot.position.x - unit, robot.position.y)
-        _ => throw(DomainError(robot.heading))
     end
-    return Robot(p, robot.heading)
+    return robot
 end
 
 function move!(robot::Robot, directions::AbstractString)
