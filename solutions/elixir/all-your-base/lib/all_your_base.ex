@@ -10,8 +10,11 @@ defmodule AllYourBase do
     |> Enum.reduce(0, fn {n, i}, acc -> n * Integer.pow(base, i) + acc end)
   end
 
-  def from_base_10(0, _), do: []
-  def from_base_10(n, base), do: [Integer.mod(n, base) | from_base_10(div(n, base), base)]
+  def from_base_10(0, _, []), do: [0]
+  def from_base_10(0, _, acc), do: acc
+  def from_base_10(n, base, acc \\ []) do
+    from_base_10(div(n, base), base, [Integer.mod(n, base) | acc])
+  end
 
   @spec convert(list, integer, integer) :: {:ok, list} | {:error, String.t()}
   def convert(_, _, output_base) when output_base < 2 do
@@ -30,8 +33,6 @@ defmodule AllYourBase do
       true ->
         to_base_10(ns, input_base)
         |> from_base_10(output_base)
-        |> Enum.reverse()
-        |> (fn ns -> if(Enum.empty?(ns), do: [0], else: ns) end).()
         |> (&{:ok, &1}).()
     end
   end
