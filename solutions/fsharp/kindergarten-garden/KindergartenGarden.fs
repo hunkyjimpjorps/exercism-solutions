@@ -29,7 +29,7 @@ let getPlantType (plant: char) : Plant =
     | 'G' -> Grass
     | 'R' -> Radishes
     | 'V' -> Violets
-    | _ -> Nothing
+    | _ -> failwith "Not a valid seed type"
 
 let divideGardenPlots (plots: string) : string list =
     plots
@@ -40,15 +40,12 @@ let divideGardenPlots (plots: string) : string list =
     |> List.map (List.map System.String)
     |> (fun g -> List.map2 (fun a b -> a + b) g.[0] g.[1])
 
-let matchGardenPlotSeeds (plots: string) : Plant list =
-    let rec matchNext (plots: char list) : Plant list =
-        match plots with
-        | [] -> []
-        | head :: [] -> getPlantType head :: []
-        | head :: tail -> getPlantType head :: matchNext tail
-
-    matchNext (Seq.toList plots)
-
 let plants (diagram: string) (student: string) : Plant list =
     let gardenPlots = divideGardenPlots diagram
-    matchGardenPlotSeeds gardenPlots.[List.findIndex (fun x -> x = student) studentList]
+
+    match List.tryFindIndex (fun x -> x = student) studentList with
+    | Some s ->
+        gardenPlots.[s]
+        |> Seq.toList
+        |> List.map getPlantType
+    | None -> failwith "Not a student in this class"
