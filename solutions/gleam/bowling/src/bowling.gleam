@@ -28,7 +28,7 @@ pub type Error {
 pub fn roll(game: Game, pins: Int) -> Result(Game, Error) {
   case game {
     Game([_, _, _, _, _, _, _, _, _, _] as frames) -> {
-      let assert [tenth, ninth, ..rest] = frames
+      let [tenth, ninth, ..rest] = frames
       use <- bool.guard(tenth.result == TenthComplete, Error(GameComplete))
       case ninth.result, tenth.rolls {
         Strike, [_] ->
@@ -48,7 +48,7 @@ pub fn roll(game: Game, pins: Int) -> Result(Game, Error) {
     Game(frames) ->
       case list.map(frames, fn(f) { f.result }) {
         [Strike, Strike, ..] -> {
-          let assert [frame1, frame2, ..rest] = frames
+          let [frame1, frame2, ..rest] = frames
           new_frame()
           |> add_roll(pins)
           |> result.map(fn(f) {
@@ -57,14 +57,14 @@ pub fn roll(game: Game, pins: Int) -> Result(Game, Error) {
         }
 
         [Spare, ..] | [Strike, ..] -> {
-          let assert [frame, ..rest] = frames
+          let [frame, ..rest] = frames
           new_frame()
           |> add_roll(pins)
           |> result.map(fn(f) { Game([f, add_bonus(frame, pins), ..rest]) })
         }
 
         [Incomplete, Strike, ..] -> {
-          let assert [frame1, frame2, ..rest] = frames
+          let [frame1, frame2, ..rest] = frames
           frame1
           |> add_roll(pins)
           |> result.map(fn(f) { Game([f, add_bonus(frame2, pins), ..rest]) })
@@ -76,12 +76,11 @@ pub fn roll(game: Game, pins: Int) -> Result(Game, Error) {
           |> result.map(fn(f) { Game([f, ..frames]) })
 
         [Incomplete, ..] -> {
-          let assert [frame, ..rest] = frames
+          let [frame, ..rest] = frames
           frame
           |> add_roll(pins)
           |> result.map(fn(f) { Game([f, ..rest]) })
         }
-        _ -> panic as "impossible frame"
       }
   }
 }
@@ -115,7 +114,6 @@ fn add_roll(f: Frame, pins: Int) -> Result(Frame, Error) {
           Ok(Frame(..f, rolls: [first, pins], result: Spare))
         _ -> Ok(Frame(..f, rolls: [first, pins], result: Complete))
       }
-    _ -> panic as "impossible frame"
   }
 }
 
@@ -146,6 +144,5 @@ fn handle_tenth_frame(f: Frame, pins: Int) -> Result(Frame, Error) {
         10 -> Ok(Frame(..f, result: Spare, rolls: [pins, r]))
         _ -> Ok(Frame(..f, result: TenthComplete, rolls: [pins, r]))
       }
-    _ -> panic as "impossible frame"
   }
 }
