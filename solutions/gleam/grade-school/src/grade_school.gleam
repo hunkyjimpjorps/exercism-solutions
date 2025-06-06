@@ -1,6 +1,6 @@
 import gleam/int
 import gleam/list
-import gleam/map.{Map}
+import gleam/map.{type Map}
 import gleam/order.{Eq}
 import gleam/pair
 import gleam/string
@@ -26,7 +26,7 @@ pub fn roster(school: School) -> List(String) {
 
 pub fn add(
   to school: School,
-  student name: StudentName,
+  student name: StudentName, 
   grade grade: ClassGrade,
 ) -> Result(School, School) {
   case map.has_key(school, name) {
