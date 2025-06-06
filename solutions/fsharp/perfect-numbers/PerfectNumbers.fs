@@ -5,17 +5,15 @@ type Classification =
     | Abundant
     | Deficient
 
-let (|IsGreaterThan|IsEqualTo|IsLessThan|IsInvalid|) (a, b) =
-    match a with
-    | _ when b <= 0 -> IsInvalid
-    | _ when a > b -> IsGreaterThan
-    | _ when a < b -> IsLessThan
+let (|IsGreaterThan|IsEqualTo|IsLessThan|IsInvalid|) =
+    function
+    | (_, b) when b <= 0 -> IsInvalid
+    | (a, b) when a > b -> IsGreaterThan
+    | (a, b) when a < b -> IsLessThan
     | _ -> IsEqualTo
 
 let aliquotSum (n: int) =
-    [| 1 .. n |> (float >> sqrt >> int) |]
-    |> Array.filter (fun i -> n % i = 0)
-    |> Array.map
+    (Array.collect
         (fun i ->
             if i = n then
                 Array.empty
@@ -23,7 +21,8 @@ let aliquotSum (n: int) =
                 [| i |]
             else
                 [| i; n / i |])
-    |> Array.concat
+        ([| 1 .. n |> (float >> sqrt >> int) |]
+         |> Array.filter (fun i -> n % i = 0)))
     |> Array.sum
 
 let classify n : Classification option =
