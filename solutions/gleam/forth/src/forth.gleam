@@ -1,13 +1,13 @@
 import gleam/int
 import gleam/list
 import gleam/string
-import gleam/map.{type Map}
+import gleam/dict.{type Dict}
 
 pub type Forth {
   Forth(
     program: List(ForthType),
     stack: List(ForthType),
-    definitions: Map(ForthType, ForthOp(ForthType)),
+    definitions: Dict(ForthType, ForthOp(ForthType)),
   )
 }
 
@@ -83,13 +83,13 @@ fn run_program(forth: Forth) -> Result(Forth, ForthError) {
       case attempt_definition(rest, forth) {
         Ok(#(name, ops, program_rest)) ->
           forth.definitions
-          |> map.insert(name, CustomOp(ops))
+          |> dict.insert(name, CustomOp(ops))
           |> Forth(stack: forth.stack, program: program_rest, definitions: _)
           |> run_program()
         Error(err) -> Error(err)
       }
     _, [Word(w), ..rest] ->
-      case map.get(forth.definitions, Word(w)) {
+      case dict.get(forth.definitions, Word(w)) {
         Ok(CustomOp(ops)) ->
           ops
           |> list.append(forth.program)
@@ -100,7 +100,7 @@ fn run_program(forth: Forth) -> Result(Forth, ForthError) {
             Ok(new_stack) -> run_program(Forth(..forth, stack: new_stack))
             Error(err) -> Error(err)
           }
-        Error(Nil) -> Error(UnknownWord)
+        _ -> Error(UnknownWord)
       }
     [], _ -> Ok(forth)
     [next, ..rest], s ->
@@ -114,7 +114,7 @@ fn attempt_definition(
 ) -> Result(#(ForthType, List(ForthType), List(ForthType)), ForthError) {
   case words {
     [Word(w), ..rest] -> {
-      let #(ops, [EndDef, ..stack]) =
+      let assert #(ops, [EndDef, ..stack]) =
         list.split_while(rest, fn(w) { w != EndDef })
       let ops = list.flat_map(ops, parse_with_context(_, forth))
       Ok(#(Word(string.uppercase(w)), ops, stack))
@@ -126,7 +126,7 @@ fn attempt_definition(
 fn parse_with_context(op: ForthType, f: Forth) -> List(ForthType) {
   case op {
     Word(_) as w ->
-      case map.get(f.definitions, w) {
+      case dict.get(f.definitions, w) {
         Ok(CustomOp(ops)) -> ops
         Ok(_) -> [w]
         _ -> []
@@ -135,7 +135,7 @@ fn parse_with_context(op: ForthType, f: Forth) -> List(ForthType) {
   }
 }
 
-pub fn standard_library() -> Map(ForthType, ForthOp(ForthType)) {
+pub fn standard_library() -> Dict(ForthType, ForthOp(ForthType)) {
   [
     #(Word("+"), ListOp(arity2_op(_, int.add))),
     #(Word("-"), ListOp(arity2_op(_, int.subtract))),
@@ -146,7 +146,7 @@ pub fn standard_library() -> Map(ForthType, ForthOp(ForthType)) {
     #(Word("SWAP"), ListOp(swap)),
     #(Word("OVER"), ListOp(over)),
   ]
-  |> map.from_list()
+  |> dict.from_list()
 }
 
 fn arity2_op(xs, f) {
