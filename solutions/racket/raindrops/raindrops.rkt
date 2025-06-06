@@ -2,15 +2,9 @@
 
 (provide convert)
 
-(define droplet-divisors '((3 "Pling")
-                           (5 "Plang")
-                           (7 "Plong")))
-
 (define (convert n)
-  (let ([droplets 
-         (for/list ([d (in-list droplet-divisors)]
-                    #:when (= 0 (modulo n (first d))))
-           (second d))])
-    (if (empty? droplets)
-        (~a n)
-        (apply string-append droplets))))
+  (string-append
+   (if (= 0 (remainder n 3)) "Pling" "")
+   (if (= 0 (remainder n 5)) "Plang" "")
+   (if (= 0 (remainder n 7)) "Plong" "")
+   (if (andmap (λ (div) (< 0 (remainder n div))) '(3 5 7)) (~a n) "")))
