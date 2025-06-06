@@ -1,12 +1,8 @@
-function allfactors(n)
-    [i for i in 1:(n ÷ 2) if n % i == 0]
-end
-
 function comparefactors(n, op)
     if n <= zero(n) 
         throw(DomainError("Not a natural order"))
     else 
-        aliquot = sum(allfactors(n))
+        aliquot = sum([i for i in 1:(n ÷ 2) if n % i == 0])
         op(n, aliquot)
     end
 end
