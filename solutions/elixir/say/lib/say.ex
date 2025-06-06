@@ -3,6 +3,21 @@ defmodule Say do
 
   @positions ["", " thousand", " million", " billion"]
 
+  @ones_digits %{
+    0 => "zero",
+    1 => "one",
+    2 => "two",
+    3 => "three",
+    4 => "four",
+    5 => "five",
+    6 => "six",
+    7 => "seven",
+    8 => "eight",
+    9 => "nine"
+  }
+
+  @tens_digits %{2 => "twenty", 3 => "thirty", 4 => "forty", 5 => "fifty", 8 => "eighty"}
+
   @doc """
   Translate a positive integer into English.
   """
@@ -24,30 +39,8 @@ defmodule Say do
     |> (&{:ok, &1}).()
   end
 
-  defp digit_name(n) do
-    case n do
-      0 -> "zero"
-      1 -> "one"
-      2 -> "two"
-      3 -> "three"
-      4 -> "four"
-      5 -> "five"
-      6 -> "six"
-      7 -> "seven"
-      8 -> "eight"
-      9 -> "nine"
-    end
-  end
-
   defp tens_digit_name(n) do
-    case n do
-      2 -> "twenty"
-      3 -> "thirty"
-      4 -> "forty"
-      5 -> "fifty"
-      8 -> "eighty"
-      n -> digit_name(n) <> "ty"
-    end
+    Map.get(@tens_digits, n, @ones_digits[n] <> "ty")
   end
 
   defp group_by_thousands(number) do
@@ -63,9 +56,9 @@ defmodule Say do
   defp parse_chunk([h, 0, 0]), do: parse_hundreds(h)
   defp parse_chunk([h, t, o]), do: parse_hundreds(h) <> " " <> parse_tens_and_ones(t, o)
 
-  defp parse_hundreds(n), do: digit_name(n) <> " " <> "hundred"
+  defp parse_hundreds(h), do: @ones_digits[h] <> " " <> "hundred"
 
-  defp parse_tens_and_ones(0, o), do: digit_name(o)
+  defp parse_tens_and_ones(0, o), do: @ones_digits[o]
 
   defp parse_tens_and_ones(1, o) do
     case o do
@@ -73,10 +66,10 @@ defmodule Say do
       1 -> "eleven"
       2 -> "twelve"
       3 -> "thirteen"
-      n -> digit_name(n) <> "teen"
+      n -> @ones_digits[n] <> "teen"
     end
   end
 
   defp parse_tens_and_ones(t, 0), do: tens_digit_name(t)
-  defp parse_tens_and_ones(t, o), do: tens_digit_name(t) <> "-" <> digit_name(o)
+  defp parse_tens_and_ones(t, o), do: tens_digit_name(t) <> "-" <> @ones_digits[o]
 end
