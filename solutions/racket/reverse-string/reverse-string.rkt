@@ -2,4 +2,4 @@
 (provide my-reverse)
 
 (define (my-reverse s)
-  (apply string (reverse (string->list s))))
+  (error "Not implemented yet"))
