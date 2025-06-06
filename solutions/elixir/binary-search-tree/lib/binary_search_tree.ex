@@ -15,10 +15,15 @@ defmodule BinarySearchTree do
   @spec insert(bst_node, any) :: bst_node
   def insert(tree = %{data: root, left: left_leaf, right: right_leaf}, data) do
     cond do
-      data <= root && is_nil(left_leaf) -> %{tree | left: %{data: data, left: nil, right: nil}}
-      data <= root -> %{tree | left: insert(left_leaf, data)}
-      data > root && is_nil(right_leaf) -> %{tree | right: %{data: data, left: nil, right: nil}}
-      data > root -> %{tree | right: insert(right_leaf, data)}
+      data <= root ->
+        if is_nil(left_leaf),
+          do: %{tree | left: new(data)},
+          else: %{tree | left: insert(left_leaf, data)}
+
+      data > root ->
+        if is_nil(right_leaf),
+          do: %{tree | right: new(data)},
+          else: %{tree | right: insert(right_leaf, data)}
     end
   end
 
@@ -29,6 +34,6 @@ defmodule BinarySearchTree do
   def in_order(nil), do: []
 
   def in_order(%{data: root, left: left_leaf, right: right_leaf}) do
-    [in_order(left_leaf) | [[root] | in_order(right_leaf)]]
+    in_order(left_leaf) ++ [root] ++ in_order(right_leaf)
   end
 end
