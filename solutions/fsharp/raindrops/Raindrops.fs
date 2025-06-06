@@ -1,7 +1,9 @@
 ﻿module Raindrops
 
+type divisor = int * string
+
 let convert (n: int) : string =
-    let divisorSounds = [ 3, "Pling"; 5, "Plang"; 7, "Plong" ]
+    let divisorSounds: divisor list = [ 3, "Pling"; 5, "Plang"; 7, "Plong" ]
 
     let isDivisible (div, sound) =
         match n % div with
