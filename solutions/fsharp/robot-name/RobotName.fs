@@ -1,10 +1,7 @@
 module RobotName
 
 type Robot = { name: string }
-
-type RobotReply =
-    | NextName of AsyncReplyChannel<string>
-    | Reset of string * AsyncReplyChannel<string>
+type RobotReply = NextName of AsyncReplyChannel<string>
 
 let r = System.Random()
 let shuffle (r: System.Random) = List.sortBy (fun _ -> r.Next())
@@ -25,9 +22,6 @@ let robotNameGenerator =
                 | NextName(channel) ->
                     channel.Reply(List.head names)
                     return! loop (List.tail names)
-                | Reset(old_name, channel) ->
-                    channel.Reply(List.head names)
-                    return! loop (shuffle r (old_name :: List.tail names))
             }
 
         loop startingNames)
@@ -39,5 +33,5 @@ let mkRobot () : Robot =
 let name (robot: Robot) : string = robot.name
 
 let reset (robot: Robot) : Robot =
-    let new_name = robotNameGenerator.PostAndReply(fun c -> Reset(robot.name, c))
+    let new_name = robotNameGenerator.PostAndReply(fun c -> NextName c)
     { robot with name = new_name }
