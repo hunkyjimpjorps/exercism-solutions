@@ -33,8 +33,8 @@ pub fn plants(diagram: String, student: Student) -> List(Plant) {
     |> list.sized_chunk(2)
   })
   |> list.transpose()
-  |> list.map(fn(str) {
-    str
+  |> list.map(fn(strs) {
+    strs
     |> list.concat()
     |> list.map(to_plant)
   })
