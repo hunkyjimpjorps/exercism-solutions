@@ -20,8 +20,8 @@ defmodule CircularBuffer do
       if state.contents == [] do
         {{:error, :empty}, state}
       else
-        {rest, [take]} = Enum.split(state.contents, -1)
-        {{:ok, take}, %{state | contents: rest}}
+        [h | t] = Enum.reverse(state.contents)
+        {{:ok, h}, %{state | contents: Enum.reverse(t)}}
       end
     end)
   end
