@@ -1,4 +1,5 @@
 ﻿module ComplexNumbers
+
 open System
 
 type MyComplexNumber = { r: double; i: double }
@@ -29,4 +30,6 @@ let real z = z.r
 
 let imaginary z = z.i
 
-let exp z = { r = Math.Exp z.r * Math.Cos z.i ; i = Math.Exp z.r * Math.Sin z.i}
+let exp z =
+    { r = Math.Exp z.r * Math.Cos z.i
+      i = Math.Exp z.r * Math.Sin z.i }
