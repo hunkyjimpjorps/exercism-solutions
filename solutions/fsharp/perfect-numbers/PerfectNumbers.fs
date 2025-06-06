@@ -17,14 +17,15 @@ let aliquotSum (n: int) =
     |> Array.filter (fun i -> n % i = 0)
     |> Array.map
         (fun i ->
-            if pown i 2 = n then
+            if i = n then
+                Array.empty
+            else if pown i 2 = n || i = 1 then
                 [| i |]
             else
                 [| i; n / i |])
     |> Array.concat
-    |> Array.filter (fun i -> i <> n)
     |> Array.sum
-    
+
 let classify n : Classification option =
     match (aliquotSum n, n) with
     | IsInvalid -> None
