@@ -1,107 +1,50 @@
 module Tournament
 
 type Score =
-    { matchesPlayed: int
-      wins: int
+    { wins: int
       draws: int
-      losses: int
-      points: int }
+      losses: int }
+    member this.MP() = this.wins + this.losses + this.draws
+    member this.P() = this.wins * 3 + this.draws
 
-let emptyRecord =
-    { matchesPlayed = 0
-      wins = 0
-      draws = 0
-      losses = 0
-      points = 0 }
+    override this.ToString() =
+        $"| {this.MP(), 2} | {this.wins, 2} | {this.draws, 2} | {this.losses, 2} | {this.P(), 2}"
 
-let updateForWin (team: string) (table: Map<string, Score>) =
+let emptyRecord: Score = { wins = 0; draws = 0; losses = 0 }
+
+let addWin (winner: string) (loser: string) (table: Map<string, Score>) : Map<string, Score> =
     table
-    |> Map.change team (fun k ->
+    |> Map.change winner (fun k ->
         match k with
-        | Some standings ->
-            Some
-                { standings with
-                    matchesPlayed = standings.matchesPlayed + 1
-                    wins = standings.wins + 1
-                    points = standings.points + 3 }
-        | None ->
-            Some
-                { emptyRecord with
-                    matchesPlayed = 1
-                    wins = 1
-                    points = 3 })
-
-let updateForLoss (team: string) (table: Map<string, Score>) =
-    table
-    |> Map.change team (fun k ->
+        | Some standings -> Some { standings with wins = standings.wins + 1 }
+        | None -> Some { emptyRecord with wins = 1 })
+    |> Map.change loser (fun k ->
         match k with
-        | Some standings ->
-            Some
-                { standings with
-                    matchesPlayed = standings.matchesPlayed + 1
-                    losses = standings.losses + 1 }
-        | None ->
-            Some
-                { emptyRecord with
-                    matchesPlayed = 1
-                    losses = 1 })
+        | Some standings -> Some { standings with losses = standings.losses + 1 }
+        | None -> Some { emptyRecord with losses = 1 })
 
-let updateForDraw (team: string) (table: Map<string, Score>) =
+let addDraw (team1: string) (team2: string) (table: Map<string, Score>) : Map<string, Score> =
     table
-    |> Map.change team (fun k ->
+    |> Map.change team1 (fun k ->
         match k with
-        | Some standings ->
-            Some
-                { standings with
-                    matchesPlayed = standings.matchesPlayed + 1
-                    draws = standings.draws + 1
-                    points = standings.points + 1 }
-        | None ->
-            Some
-                { emptyRecord with
-                    matchesPlayed = 1
-                    draws = 1
-                    points = 1 })
+        | Some standings -> Some { standings with draws = standings.draws + 1 }
+        | None -> Some { emptyRecord with draws = 1 })
+    |> Map.change team2 (fun k ->
+        match k with
+        | Some standings -> Some { standings with draws = standings.draws + 1 }
+        | None -> Some { emptyRecord with draws = 1 })
 
+let updateTable table (h: string) : Map<string, Score> =
+    match h.Split(';') with
+    | [| team1; team2; "win" |] -> addWin team1 team2 table
+    | [| team1; team2; "loss" |] -> addWin team2 team1 table
+    | [| team1; team2; "draw" |] -> addDraw team1 team2 table
+    | _ -> failwith "Invalid match format"
 
-let addWin (winner: string) (loser: string) (table: Map<string, Score>) =
-    table
-    |> updateForWin winner
-    |> updateForLoss loser
-
-let addDraw (team1: string) (team2: string) (table: Map<string, Score>) =
-    table
-    |> updateForDraw team1
-    |> updateForDraw team2
-
-let updateTable table (h: string) =
-    let [| team1; team2; result |] = h.Split(';')
-
-    match result with
-    | "win" -> addWin team1 team2 table
-    | "loss" -> addWin team2 team1 table
-    | "draw" -> addDraw team1 team2 table
-    | _ -> failwith "Invalid match result"
-
-let formatRow (row: string * Score) =
-    let (team,
-         { matchesPlayed = mp
-           wins = w
-           draws = d
-           losses = l
-           points = p }) =
-        row
-
-    $"{team, -30} | {mp, 2} | {w, 2} | {d, 2} | {l, 2} | {p, 2}"
-
-let appendHeader rows =
-    "Team                           | MP |  W |  D |  L |  P"
-    :: rows
-
-let tally (input: string list) =
+let tally (input: string list) : string list =
     input
     |> List.fold updateTable Map.empty
     |> Map.toList
-    |> List.sortByDescending (fun (_, r) -> r.points)
-    |> List.map formatRow
-    |> appendHeader
+    |> List.sortByDescending (fun (_, r) -> r.P())
+    |> List.map (fun (team, score) -> $"{team, -30} {score}")
+    |> List.append [ "Team                           | MP |  W |  D |  L |  P" ]
