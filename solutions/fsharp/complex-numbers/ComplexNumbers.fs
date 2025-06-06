@@ -1,35 +1,32 @@
 ﻿module ComplexNumbers
-
 open System
 
-type MyComplexNumber = { Re: double; Im: double }
+type MyComplexNumber = { r: double; i: double }
 
-let create real imaginary = { Re = real; Im = imaginary }
+let create real imaginary = { r = real; i = imaginary }
 
 let mul z1 z2 =
-    { Re = z1.Re * z2.Re - z1.Im * z2.Im
-      Im = z1.Im * z2.Re + z1.Re * z2.Im }
+    { r = z1.r * z2.r - z1.i * z2.i
+      i = z1.i * z2.r + z1.r * z2.i }
 
-let add z1 z2 = { Re = z1.Re + z2.Re; Im = z1.Im + z2.Im }
+let add z1 z2 = { r = z1.r + z2.r; i = z1.i + z2.i }
 
-let sub z1 z2 = add z1 { Re = -z2.Re; Im = -z2.Im }
+let sub z1 z2 = add z1 { r = -z2.r; i = -z2.i }
 
 let div z1 z2 =
-    { Re =
-          (z1.Re * z2.Re + z1.Im * z2.Im)
-          / (pown z2.Re 2 + pown z2.Im 2)
-      Im =
-          (z1.Im * z2.Re - z1.Re * z2.Im)
-          / (pown z2.Re 2 + pown z2.Im 2) }
+    { r =
+          (z1.r * z2.r + z1.i * z2.i)
+          / (pown z2.r 2 + pown z2.i 2)
+      i =
+          (z1.i * z2.r - z1.r * z2.i)
+          / (pown z2.r 2 + pown z2.i 2) }
 
-let abs z = sqrt (pown z.Re 2 + pown z.Im 2)
+let abs (z: MyComplexNumber) = sqrt (pown z.r 2 + pown z.i 2)
 
-let conjugate z = { z with Im = -z.Im }
+let conjugate z = { z with i = -z.i }
 
-let real z = z.Re
+let real z = z.r
 
-let imaginary z = z.Im
+let imaginary z = z.i
 
-let exp z =
-    { Re = Math.Exp z.Re * Math.Cos z.Im
-      Im = Math.Exp z.Re * Math.Sin z.Im }
+let exp z = { r = Math.Exp z.r * Math.Cos z.i ; i = Math.Exp z.r * Math.Sin z.i}
