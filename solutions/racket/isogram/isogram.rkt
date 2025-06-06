@@ -5,8 +5,8 @@
 (define (isogram? s)
   (define process-s
     (~> s
-      (string-replace _ #px"-|\\s" "")
+      (string-replace #px"-|\\s" "")
       string-downcase
       string->list
-      (sort _ char>?)))
+      (sort char>?)))
   (equal? process-s (remove-duplicates process-s)))
