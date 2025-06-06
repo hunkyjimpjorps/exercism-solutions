@@ -1,21 +1,21 @@
-import gleam/regex.{Match}
+import gleam/regexp.{Match}
 import gleam/option.{Some}
 
 pub fn is_valid_line(line: String) -> Bool {
   let assert Ok(valid_prefix) =
-    regex.from_string("^\\[(WARNING|ERROR|INFO|DEBUG)\\]")
-  regex.check(line, with: valid_prefix)
+    regexp.from_string("^\\[(WARNING|ERROR|INFO|DEBUG)\\]")
+  regexp.check(line, with: valid_prefix)
 }
 
 pub fn split_line(line: String) -> List(String) {
-  let assert Ok(arrows) = regex.from_string("<[~*=-]*>")
-  regex.split(line, with: arrows)
+  let assert Ok(arrows) = regexp.from_string("<[~*=-]*>")
+  regexp.split(line, with: arrows)
 }
 
 pub fn tag_with_user_name(line: String) -> String {
-  let assert Ok(find_username) = regex.from_string("User\\s+(\\S*)")
-  case regex.scan(line, with: find_username) {
+  let assert Ok(find_username) = regexp.from_string("User\\s+(\\S*)")
+  case regexp.scan(line, with: find_username) {
     [Match(submatches: [Some(s)], ..)] -> "[USER] " <> s <> " " <> line
-    [] -> line
+    _ -> line
   }
 }
