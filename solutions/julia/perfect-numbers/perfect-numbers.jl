@@ -1,6 +1,6 @@
 function comparefactors(n, op)
     if n <= zero(n) 
-        throw(DomainError("Not a natural order"))
+        throw(DomainError("Not a natural number"))
     else 
         aliquot = sum([i for i in 1:(n ÷ 2) if n % i == 0])
         op(n, aliquot)
