@@ -49,10 +49,10 @@ defmodule Say do
     |> Enum.map(&Enum.reverse/1)
   end
 
-  defp parse_chunk([0, 0, 0]), do: ""
-  defp parse_chunk([0, t, o]), do: parse_tens_and_ones(t, o)
-  defp parse_chunk([h, 0, 0]), do: parse_hundreds(h)
-  defp parse_chunk([h, t, o]), do: parse_hundreds(h) <> " " <> parse_tens_and_ones(t, o)
+  defp parse_chunk([h, t, o]) do
+    (parse_hundreds(h) <> " " <> parse_tens_and_ones(t, o))
+    |> String.trim()
+  end
 
   defp parse_hundreds(h), do: @ones_digits[h] <> " " <> "hundred"
 
