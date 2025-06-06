@@ -1,7 +1,6 @@
 import gleam/regex
 import gleam/string
 import gleam/list
-import gleam/io.{debug}
 import gleam/set
 
 pub fn is_isogram(phrase phrase: String) -> Bool {
