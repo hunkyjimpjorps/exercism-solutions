@@ -1,4 +1,4 @@
-import gleam/regexp
+import gleam/regex
 import gleam/string
 
 type Volume {
@@ -17,8 +17,8 @@ type Interrogating {
 }
 
 fn contains_letters(remark: String) -> Bool {
-  let assert Ok(re) = regexp.from_string("[A-Za-z]")
-  regexp.check(with: re, content: remark)
+  let assert Ok(re) = regex.from_string("[A-Za-z]")
+  regex.check(with: re, content: remark)
 }
 
 fn is_yelling(remark: String) -> Intensity {
