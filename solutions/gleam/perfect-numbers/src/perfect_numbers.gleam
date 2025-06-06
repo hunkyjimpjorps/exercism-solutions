@@ -1,6 +1,7 @@
 import gleam/int
 import gleam/float
 import gleam/list
+import gleam/order.{Eq, Gt, Lt}
 
 pub type Classification {
   Perfect
@@ -13,22 +14,21 @@ pub type Error {
 }
 
 pub fn classify(number: Int) -> Result(Classification, Error) {
-  case number {
-    n if n <= 0 -> Error(NonPositiveInt)
-    n ->
-      case aliquot(n) {
-        sum if n == sum -> Ok(Perfect)
-        sum if n < sum -> Ok(Abundant)
-        _ -> Ok(Deficient)
+  case number <= 0 {
+    True -> Error(NonPositiveInt)
+    False ->
+      case int.compare(aliquot(number), number) {
+        Eq -> Ok(Perfect)
+        Gt -> Ok(Abundant)
+        Lt -> Ok(Deficient)
       }
   }
 }
 
 fn aliquot(number: Int) -> Int {
   let assert Ok(sqrt) = int.square_root(number)
-  let upper_limit = float.round(sqrt)
 
-  list.range(from: 1, to: upper_limit)
+  list.range(from: 1, to: float.round(sqrt))
   |> list.fold(
     from: -number,
     with: fn(acc, i) {
