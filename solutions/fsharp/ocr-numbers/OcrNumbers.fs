@@ -1,7 +1,8 @@
 module OcrNumbers
 let splitIntoCharBlocks strs =
     strs 
-    |> List.map (Seq.toList >> List.chunkBySize 3)
+    |> List.map (Seq.toList)
+    |> List.map (List.chunkBySize 3)
     |> List.transpose
     |> List.map (List.concat)
 
@@ -14,12 +15,15 @@ let chars =
     ] |> splitIntoCharBlocks
 
 let charMap =
-    chars
-    |> List.mapi (fun i chrs -> chrs, string i)
+    seq {0 .. 9} 
+    |> Seq.toList
+    |> List.zip chars
     |> Map.ofList
 
 let convertOne input = 
-    Map.tryFind input charMap |> Option.defaultValue "?"
+    match Map.tryFind input charMap with
+    | Some n -> string n
+    | None -> "?"
 
 let convertLine input =
     input 
@@ -28,7 +32,7 @@ let convertLine input =
     |> String.concat ""
 
 let convert input =
-    if List.length input % 4 <> 0 || List.exists (fun str -> String.length str % 3 <> 0) input then
+    if List.length input % 4 <> 0 || String.length input[0] % 3 <> 0 then
         None
     else
         input
