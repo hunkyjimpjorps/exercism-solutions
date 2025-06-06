@@ -29,6 +29,6 @@ defmodule BinarySearchTree do
   def in_order(nil), do: []
 
   def in_order(%{data: root, left: left_leaf, right: right_leaf}) do
-    in_order(left_leaf) ++ [root] ++ in_order(right_leaf)
+    [in_order(left_leaf) | [[root] | in_order(right_leaf)]]
   end
 end
