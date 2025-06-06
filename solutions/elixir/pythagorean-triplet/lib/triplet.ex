@@ -25,7 +25,7 @@ defmodule Triplet do
     for a <- 1..div(sum, 3),
         b <- (a + 1)..div(sum, 2),
         c_candidate = sum - b - a,
-        pythagorean?([a, b, c_candidate]) do
+        c_candidate ** 2 == a ** 2 + b ** 2 do
       [a, b, c_candidate]
     end
   end
