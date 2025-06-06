@@ -1,5 +1,4 @@
 import gleam/list
-import gleam/io
 
 fn row(n: Int) -> List(Int) {
   case n {
@@ -20,9 +19,4 @@ pub fn rows(n: Int) -> List(List(Int)) {
     0 -> []
     _ -> list.map(list.range(1, n), row)
   }
-}
-
-pub fn main() {
-  rows(20)
-  |> io.debug()
 }
