@@ -22,7 +22,7 @@ let div z1 z2 =
           (z1.i * z2.r - z1.r * z2.i)
           / (pown z2.r 2 + pown z2.i 2) }
 
-let abs (z: MyComplexNumber) = sqrt (pown z.r 2 + pown z.i 2)
+let abs z = sqrt (pown z.r 2 + pown z.i 2)
 
 let conjugate z = { z with i = -z.i }
 
