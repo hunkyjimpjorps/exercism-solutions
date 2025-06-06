@@ -1,0 +1,82 @@
+defmodule Say do
+  @moduledoc false
+
+  @positions ["", " thousand", " million", " billion"]
+
+  @doc """
+  Translate a positive integer into English.
+  """
+  @spec in_english(integer) :: {atom, String.t()}
+  def in_english(number) when number > 999_999_999_999 or number < 0 do
+    {:error, "number is out of range"}
+  end
+
+  def in_english(0), do: {:ok, "zero"}
+
+  def in_english(number) do
+    group_by_thousands(number)
+    |> Enum.map(&parse_chunk/1)
+    |> Enum.reverse()
+    |> Enum.zip(@positions)
+    |> Enum.reverse()
+    |> Enum.reject(fn {word, _} -> word == "" end)
+    |> Enum.map_join(" ", &Tuple.to_list/1)
+    |> (&{:ok, &1}).()
+  end
+
+  defp digit_name(n) do
+    case n do
+      0 -> "zero"
+      1 -> "one"
+      2 -> "two"
+      3 -> "three"
+      4 -> "four"
+      5 -> "five"
+      6 -> "six"
+      7 -> "seven"
+      8 -> "eight"
+      9 -> "nine"
+    end
+  end
+
+  defp tens_digit_name(n) do
+    case n do
+      2 -> "twenty"
+      3 -> "thirty"
+      4 -> "forty"
+      5 -> "fifty"
+      8 -> "eighty"
+      n -> digit_name(n) <> "ty"
+    end
+  end
+
+  defp group_by_thousands(number) do
+    Integer.digits(number)
+    |> Enum.reverse()
+    |> Enum.chunk_every(3, 3, [0, 0, 0])
+    |> Enum.map(&Enum.reverse/1)
+    |> Enum.reverse()
+  end
+
+  defp parse_chunk([0, 0, 0]), do: ""
+  defp parse_chunk([0, t, o]), do: parse_tens_and_ones(t, o)
+  defp parse_chunk([h, 0, 0]), do: parse_hundreds(h)
+  defp parse_chunk([h, t, o]), do: parse_hundreds(h) <> " " <> parse_tens_and_ones(t, o)
+
+  defp parse_hundreds(n), do: digit_name(n) <> " " <> "hundred"
+
+  defp parse_tens_and_ones(0, o), do: digit_name(o)
+
+  defp parse_tens_and_ones(1, o) do
+    case o do
+      0 -> "ten"
+      1 -> "eleven"
+      2 -> "twelve"
+      3 -> "thirteen"
+      n -> digit_name(n) <> "teen"
+    end
+  end
+
+  defp parse_tens_and_ones(t, 0), do: tens_digit_name(t)
+  defp parse_tens_and_ones(t, o), do: tens_digit_name(t) <> "-" <> digit_name(o)
+end
