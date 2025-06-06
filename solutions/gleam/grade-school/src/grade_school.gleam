@@ -1,12 +1,12 @@
 import gleam/int
 import gleam/list
-import gleam/map.{type Map}
+import gleam/dict.{type Dict}
 import gleam/order.{Eq}
 import gleam/pair
 import gleam/string
 
 pub type School =
-  Map(StudentName, ClassGrade)
+  Dict(StudentName, ClassGrade)
 
 type StudentName =
   String
@@ -19,7 +19,7 @@ type Student =
 
 pub fn roster(school: School) -> List(String) {
   school
-  |> map.to_list()
+  |> dict.to_list()
   |> list.sort(compare)
   |> list.map(pair.first)
 }
@@ -29,21 +29,21 @@ pub fn add(
   student name: StudentName, 
   grade grade: ClassGrade,
 ) -> Result(School, School) {
-  case map.has_key(school, name) {
+  case dict.has_key(school, name) {
     True -> Error(school)
-    False -> Ok(map.insert(school, name, grade))
+    False -> Ok(dict.insert(school, name, grade))
   }
 }
 
 pub fn grade(school: School, desired_grade: ClassGrade) -> List(StudentName) {
   school
-  |> map.filter(fn(_, grade) { grade == desired_grade })
-  |> map.keys()
+  |> dict.filter(fn(_, grade) { grade == desired_grade })
+  |> dict.keys()
   |> list.sort(string.compare)
 }
 
 pub fn create() -> School {
-  map.new()
+  dict.new()
 }
 
 fn compare(student1: Student, student2: Student) {
