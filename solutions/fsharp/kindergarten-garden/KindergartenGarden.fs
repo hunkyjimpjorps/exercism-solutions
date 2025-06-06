@@ -7,7 +7,6 @@ type Plant =
     | Grass
     | Radishes
     | Violets
-    | Nothing
 
 let studentList =
     [ "Alice"
