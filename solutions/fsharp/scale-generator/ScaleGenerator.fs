@@ -15,13 +15,13 @@ let chromatic (tonic: string) : string list =
         | "d" | "g"  | "c"  | "f"  | "bb" | "eb" -> noteNameFlats
         | _ -> failwith "Invalid tonic"
 
-    let rec rearrange (notes: string list) : string list =
+    let rec rearrange (topTonic: string) (notes: string list) : string list =
         match notes with
-        | h :: _ when h.ToUpper() = tonic.ToUpper() -> notes
-        | h :: t -> rearrange (t @ [ h ])
+        | h :: _ when h.ToUpper() = topTonic.ToUpper() -> notes
+        | h :: t -> rearrange topTonic (t @ [ h ])
         | [] -> failwith "Invalid note list"
 
-    rearrange noteList
+    rearrange tonic noteList
 
 let interval (intervals: string) (tonic: string) : string list =
     let noteList = chromatic tonic
