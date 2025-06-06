@@ -7,7 +7,7 @@ function prime_factors(n)
             push!(factors, i)
             n = n ÷ i
         else
-            i += 1
+            isodd(i) ? i += 2 : i += 1
         end
     end
     return factors
