@@ -3,7 +3,7 @@ let splitIntoCharBlocks strs =
     strs 
     |> List.map (Seq.toList >> List.chunkBySize 3)
     |> List.transpose
-    |> List.map (List.concat >> List.toArray >> string)
+    |> List.map (List.concat)
 
 let chars =
     [ 
