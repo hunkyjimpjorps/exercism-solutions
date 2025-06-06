@@ -1,8 +1,8 @@
 defmodule HighScore do
-  @undefined_score 0
   def new(), do: %{}
 
-  def add_player(scores, name, score \\ @undefined_score), do: Map.put(scores, name, score)
+  def add_player(scores, name, score), do: Map.put(scores, name, score)
+  def add_player(scores, name), do: Map.put(scores, name, 0)
 
   def remove_player(scores, name), do: Map.delete(scores, name)
 
