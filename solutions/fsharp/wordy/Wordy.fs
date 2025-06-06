@@ -2,11 +2,8 @@ module Wordy
 
 open FParsec
 
-type Operation =
-    | Add
-    | Subtract
-    | Multiply
-    | Divide
+type Operation = int -> int -> int
+type OperationNode = Operation * int
 
 // parser primitives
 let ws = spaces
@@ -17,10 +14,10 @@ let pEnd = skipString "?"
 let pNumber = pint32
 
 let pOperator =
-    choice [ stringReturn "plus" Add
-             stringReturn "minus" Subtract
-             stringReturn "multiplied by" Multiply
-             stringReturn "divided by" Divide ]
+    choice [ stringReturn "plus" (+)
+             stringReturn "minus" (-)
+             stringReturn "multiplied by" (*)
+             stringReturn "divided by" (/) ]
 
 let pNextOp = (ws >>. pOperator) .>>. (ws >>. pNumber)
 
@@ -29,17 +26,12 @@ let pSentence =
 
 // parsing function
 
-let lookupFunc (f: Operation) : int -> int -> int =
-    match f with
-    | Add -> (+)
-    | Subtract -> (-)
-    | Multiply -> (*)
-    | Divide -> (/)
-
-let rec parseCaptures (c: int * (Operation * int) list) : int =
-    match c with
+let rec parseCaptures =
+    function
     | acc, [] -> acc
-    | acc, h :: t -> parseCaptures ((lookupFunc (fst h) acc (snd h)), t)
+    | acc, h : OperationNode :: t ->
+        (fst h) acc (snd h)
+        |> (fun f -> parseCaptures (f, t))
 
 let answer (question: string) : int option =
     match run pSentence question with
