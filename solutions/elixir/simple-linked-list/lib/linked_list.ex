@@ -59,7 +59,7 @@ defmodule LinkedList do
   """
   @spec from_list(list()) :: cons_pair
   def from_list([]), do: {nil}
-  def from_list([head | tail]), do: push(head, from_list(tail))
+  def from_list([head | tail]), do: push(from_list(tail), head)
 
   @doc """
   Construct a stdlib List LinkedList from a LinkedList
@@ -74,5 +74,5 @@ defmodule LinkedList do
   @spec reverse(cons_pair) :: cons_pair
   def reverse(list), do: do_reverse(list, {nil})
   defp do_reverse({nil}, acc), do: acc
-  defp do_reverse({head, tail}, acc), do: do_reverse(tail, push(head, acc))
+  defp do_reverse({head, tail}, acc), do: do_reverse(tail, push(acc, head))
 end
