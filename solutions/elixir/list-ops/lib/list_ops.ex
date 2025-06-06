@@ -37,5 +37,6 @@ defmodule ListOps do
 
   @spec concat([[any]]) :: [any]
   def concat([]), do: []
+  def concat([x | xs]) when is_list(x), do: append(x, concat(xs))
   def concat([x | xs]), do: [x | concat(xs)]
 end
