@@ -9,7 +9,7 @@ function raindrops(number)
             result = result * get(drops, dropfactor, "")
         end
     end
-    if isempty(result)
+    if result == ""
         result = string(number)
     end
     return result
