@@ -1,5 +1,5 @@
-import gleam/option.{type Option}
+import gleam/option.{Option, unwrap}
 
 pub fn two_fer(name: Option(String)) -> String {
-  "One for " <> option.unwrap(name, or: "you") <> ", one for me."
+  "One for " <> unwrap(name, or: "you") <> ", one for me."
 }
