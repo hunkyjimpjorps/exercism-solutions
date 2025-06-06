@@ -6,7 +6,6 @@ defmodule BankAccount do
   @moduledoc """
   A bank account that supports access from multiple processes.
   """
-  @type closed :: {:error, :account_closed}
 
   @typedoc """
   An account handle.
@@ -33,7 +32,7 @@ defmodule BankAccount do
   @doc """
   Get the account's balance.
   """
-  @spec balance(account) :: integer | closed
+  @spec balance(account) :: integer
   def balance(account) do
     if account_closed?(account) do
       {:error, :account_closed}
@@ -45,7 +44,7 @@ defmodule BankAccount do
   @doc """
   Update the account's balance by adding the given amount which may be negative.
   """
-  @spec update(account, integer) :: :ok | closed
+  @spec update(account, integer) :: any
   def update(account, amount) do
     if account_closed?(account) do
       {:error, :account_closed}
