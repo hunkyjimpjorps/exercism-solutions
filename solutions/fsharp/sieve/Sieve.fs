@@ -8,6 +8,7 @@ let primes limit =
         // We can stop iterating over the list once we reach a head value whose square
         // is greater than the limit, since all its multiples will have been already
         // sieved by earlier steps
+        // Since we pre-sieved out 2 when making the initial list, we add it back in now
         | h :: t when pown h 2 > limit -> 2 :: (List.rev acc @ candidates)
         // For the same reason, we don't have to check to filter out multiples lower than h * h
         // since 2h, 3h, 4h... will have already been removed
