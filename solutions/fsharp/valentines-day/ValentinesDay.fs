@@ -28,9 +28,9 @@ type Activity =
 
 let rateActivity (activity: Activity): Approval = 
     match activity with
-    | Movie Genre.Romance -> Yes
-    | Restaurant Cuisine.Korean -> Yes 
+    | Movie Romance -> Yes
+    | Restaurant Korean -> Yes 
     | Walk distance when distance < 3 -> Yes
-    | Restaurant Cuisine.Turkish -> Maybe
+    | Restaurant Turkish -> Maybe
     | Walk distance when distance < 5 -> Maybe
     | _ -> No
