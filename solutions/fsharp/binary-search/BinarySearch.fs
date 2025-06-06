@@ -4,7 +4,6 @@ let find (input: int array) (value: int) : int option =
     let rec findrec (input: (int * int) array)=
         match input with
         | [||] -> None
-        | [| n |] when (snd n) = value -> Some(fst n)
         | _ ->
             Array.item (input.Length / 2) input
             |> snd
