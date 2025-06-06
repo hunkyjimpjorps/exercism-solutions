@@ -12,13 +12,13 @@ defmodule WineCellar do
     |> Keyword.values()
     |> (fn wines ->
           case Keyword.fetch(opts, :year) do
-            {:ok, y} -> Enum.filter(wines, &(elem(&1, 1) == y))
+            {:ok, y} -> filter_by_year(wines, y)
             :error -> wines
           end
         end).()
     |> (fn wines ->
           case Keyword.fetch(opts, :country) do
-            {:ok, c} -> Enum.filter(wines, &(elem(&1, 2) == c))
+            {:ok, c} -> filter_by_country(wines, c)
             :error -> wines
           end
         end).()
