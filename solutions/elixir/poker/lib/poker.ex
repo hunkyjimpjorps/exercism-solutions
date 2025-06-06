@@ -66,7 +66,7 @@ defmodule Poker do
         true -> :high_card
       end
 
-    {classify_as, tiebreakers(hand)}
+    classify(hand, classify_as)
   end
 
   defp parse_card(<<"10", suit>>) do
@@ -87,11 +87,14 @@ defmodule Poker do
     @hands[type1] >= @hands[type2]
   end
 
+  defp compare_hands({type, a}, {type, b}), do: a >= b
   defp compare_hands({type, []}, {type, []}), do: true
 
-  defp compare_hands({type, [n | rest1]}, {type, [n | rest2]}), 
-    do: compare_hands({type, rest1}, {type, rest2})
-
-  defp compare_hands({type, [n1 | _]}, {type, [n2 | _]}),
-    do: n1 >= n2
+  defp compare_hands({type, [a | rest_a]}, {type, [b | rest_b]}) do
+    if a == b do
+      compare_hands({type, rest_a}, {type, rest_b})
+    else
+      a >= b
+    end
+  end
 end
