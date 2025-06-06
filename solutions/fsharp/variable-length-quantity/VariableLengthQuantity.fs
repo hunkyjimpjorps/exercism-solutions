@@ -1,18 +1,20 @@
 ﻿module VariableLengthQuantity
 
-let baseVLQuint = 0x80u
-let baseVLQbyte = baseVLQuint |> byte
-
-let rec findMaxBase b i n =
-    if n / b = 0u then
-        i
+let rec findMaxBase n b i =
+    if n >= pown b (i + 1) then
+        findMaxBase n b (i + 1)
     else
-        findMaxBase b (i + 1) (n / b)
+        i
 
-let rec toNewBase b i acc n : byte list =
-    match i with
-    | -1 -> acc |> List.rev |> List.map byte
-    | _ -> toNewBase b (i - 1) ((n / (pown b i)) :: acc) (n % (pown b i))
+let rec toNewBase (b: int64) (n: int64) : byte list =
+    let mutable digits = List.empty
+    let mutable remaining = n
+
+    for i in (findMaxBase n b 0) .. -1 .. 0 do
+        digits <- digits @ [ remaining / (pown b i) ]
+        remaining <- remaining % (pown b i)
+
+    digits |> List.map byte
 
 let flipVLQBytes (bytes: byte list) =
     match bytes.Length with
@@ -20,26 +22,24 @@ let flipVLQBytes (bytes: byte list) =
     | _ ->
         List.append
             (bytes.[..bytes.Length - 2]
-             |> List.map (fun b -> b ||| baseVLQbyte))
+             |> List.map (fun b -> b ||| 128uy))
             [ List.last bytes ]
 
 let encode (number: uint32 list) =
     number
-    |> List.collect (
-        (fun n -> toNewBase baseVLQuint (findMaxBase baseVLQuint 0 n) [] n)
-        >> flipVLQBytes
-    )
+    |> List.collect (int64 >> toNewBase 128L >> flipVLQBytes)
 
 let rec groupBytes (lst: byte list) (byteAcc: byte list) (allBytes: byte list list) =
     match lst with
-    | [] when byteAcc.IsEmpty -> allBytes |> List.rev |> Some
-    | h :: t when h &&& baseVLQbyte = baseVLQbyte -> groupBytes t ((h ^^^ baseVLQbyte) :: byteAcc) allBytes
-    | h :: t -> groupBytes t [] ((h :: byteAcc) :: allBytes)
+    | [] when byteAcc.IsEmpty -> Some allBytes
+    | h :: t when h &&& 128uy = 128uy -> groupBytes t (byteAcc @ [ h ^^^ 128uy ]) allBytes
+    | h :: t -> groupBytes t [] (allBytes @ [ byteAcc @ [ h ] ])
     | [] -> None
 
 let rec sumBytes (lst: byte list) =
     lst
-    |> List.mapi (fun i b -> uint32 b * pown baseVLQuint i)
+    |> List.rev
+    |> List.mapi (fun i b -> uint32 b * pown 128u i)
     |> List.sum
 
 let decode bytes =
