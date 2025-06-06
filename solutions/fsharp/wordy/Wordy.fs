@@ -30,7 +30,7 @@ let pSentence =
 let rec parseCaptures =
     function
     | acc, [] -> acc
-    | (acc: int), (op, x): OperationNode :: (t: OperationTail) ->
+    | (acc: int), (op, x): OperationNode :: t ->
         op acc x
         |> (fun result -> parseCaptures (result, t))
 
