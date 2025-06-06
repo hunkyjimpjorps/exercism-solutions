@@ -1,5 +1,3 @@
-import gleam/list
-
 pub type Pizza {
   Margherita
   Caprese
@@ -19,12 +17,11 @@ pub fn pizza_price(pizza: Pizza) -> Int {
 }
 
 pub fn order_price(order: List(Pizza)) -> Int {
-  let surcharge = case list.length(order) {
-    1 -> 3
-    2 -> 2
-    _ -> 0
+  case order {
+    [_] -> do_order_price(order, 3)
+    [_, _] -> do_order_price(order, 2)
+    _ -> do_order_price(order, 0)
   }
-  do_order_price(order, 0) + surcharge
 }
 
 fn do_order_price(order, acc) {
