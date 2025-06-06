@@ -10,7 +10,14 @@ conversion("Neptune", 164.79132).
 seconds_to_years(Seconds, Years) :-
     Years is Seconds / 31557600.
 
-space_age(Planet, AgeSec, Years) :-
+round_to(Value, Precision, RoundedValue):-
+    N is Value * 10 ^ Precision,
+    round(N, NRounded),
+    RoundedValue is NRounded / 10 ^ Precision.
+
+space_age(Planet, AgeSec, YearsFormatted) :-
     conversion(Planet, YearFactor),
     seconds_to_years(AgeSec, AgeYears),
-    Years is AgeYears / YearFactor.
+    Years is AgeYears / YearFactor,
+    round_to(Years, 2, YearsFormatted).
+    
