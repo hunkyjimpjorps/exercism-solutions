@@ -7,8 +7,7 @@ defmodule Queens do
   """
   @spec new(Keyword.t()) :: Queens.t()
   def new(opts) do
-    colors = MapSet.new(Keyword.keys(opts))
-    if not MapSet.subset?(colors, MapSet.new([:black, :white])), do: raise(ArgumentError)
+    if Enum.any?(Keyword.keys(opts), &(&1 not in [:white, :black])), do: raise(ArgumentError)
 
     new = struct(Queens, opts)
 
@@ -43,6 +42,7 @@ defmodule Queens do
   Checks if the queens can attack each other
   """
   @spec can_attack?(Queens.t()) :: boolean
+
   def can_attack?(%Queens{black: {r, _}, white: {r, _}}), do: true
   def can_attack?(%Queens{black: {_, c}, white: {_, c}}), do: true
 
