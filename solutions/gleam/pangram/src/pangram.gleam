@@ -1,16 +1,13 @@
 import gleam/regex
-import gleam/list
 import gleam/string
+import gleam/set
 
 pub fn is_pangram(sentence: String) -> Bool {
-  let assert Ok(nonalpha) = regex.from_string("[^a-z]")
+  let assert Ok(alpha) = regex.from_string("[a-z]")
 
   sentence
   |> string.lowercase()
-  |> regex.split(with: nonalpha)
-  |> string.concat()
-  |> string.to_graphemes()
-  |> list.unique()
-  |> list.length()
-  |> { fn(n) { n == 26 } }
+  |> regex.scan(with: alpha)
+  |> set.from_list()
+  |> set.size == 26
 }
