@@ -2,22 +2,24 @@ module Wordy
 
 open FParsec
 
-type Operation = int -> int -> int
-type OperationNode = Operation * int
-type OperationTail = OperationNode list
-
 // parser primitives
 let ws = spaces
-let pBegin = skipString "What is"
+let pBegin = skipString "What is" >>. ws
 let pEnd = skipString "?"
 
 let pNumber = pint32
 
+// set up the OperatorPrecedenceParser
+// which automatically parses alternating series of terms and operators
 let pOpParser =
     new OperatorPrecedenceParser<int, unit, unit>()
 
 pOpParser.TermParser <- pNumber .>> ws
 
+// for each string, define an operator that
+// - is delimited by spaces
+// - has an associativity level of 1 (same level for all operators)
+// - is left associative (all operations calculated from left to right)
 [| "plus", (+)
    "minus", (-)
    "multiplied by", (*)
@@ -25,14 +27,14 @@ pOpParser.TermParser <- pNumber .>> ws
 |> Array.iter (fun (s, op) -> pOpParser.AddOperator(InfixOperator(s, ws, 1, Associativity.Left, op)))
 
 let pSentence =
-    pBegin >>. ws >>. pOpParser.ExpressionParser .>> pEnd
+    pBegin >>. pOpParser.ExpressionParser .>> pEnd
 
 // parsing function
 let answer (question: string) : int option =
     match run pSentence question with
-    | Success (result, _, _) -> 
+    | Success (result, _, _) ->
         printfn $"Success: {question} was parsed as {result}"
         Some(result)
-    | Failure (error, _, _) -> 
+    | Failure (error, _, _) ->
         printfn $"Error: {error}"
         None
