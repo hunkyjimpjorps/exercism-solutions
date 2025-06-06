@@ -22,11 +22,7 @@ fn to_digit(color: String) -> Int {
 fn pow(x, n) {
   case n {
     0 -> 1
-    n ->
-      case n % 2 {
-        0 -> pow(x * x, n / 2)
-        1 -> x * pow(x, n - 1)
-      }
+    n -> x * pow(x, n - 1)
   }
 }
 
