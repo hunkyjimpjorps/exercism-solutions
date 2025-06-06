@@ -20,8 +20,9 @@ fn insert_to_tree(tree: Tree, item: Int) -> Tree {
     Nil -> Node(data: item, left: Nil, right: Nil)
     Node(data: a, left: l, right: r) if a >= item ->
       Node(data: a, left: insert_to_tree(l, item), right: r)
-    Node(data: a, left: l, right: r) ->
+    Node(data: a, left: l, right: r) if a < item ->
       Node(data: a, left: l, right: insert_to_tree(r, item))
+    _ -> panic
   }
 }
 
