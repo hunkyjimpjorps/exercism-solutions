@@ -2,7 +2,7 @@
 (provide rows)
 
 (define (factorial n)
-  (for/product ([i n]) i))
+  (for/product ([i n]) (add1 i)))
 
 (define (combinations n k)
   (/ (factorial n) (factorial k) (factorial (- n k))))
