@@ -20,24 +20,24 @@
 (define final-line (animal-epithet (first animals)))
 
 (define (recite start-verse end-verse)
-  (flatten (add-between (for/list ([verse (in-inclusive-range start-verse end-verse)])
-                          (recite-verse verse))
-                        "")))
+  (flatten
+   (add-between
+    (for/list ([verse (in-inclusive-range start-verse end-verse)])
+      (recite-verse verse))
+    "")))
 
 (define (recite-verse n)
   (define subset (reverse (take animals n)))
   (match-define (animal latest-animal latest-epithet terminal? _) (first subset))
-  (for/lists [chain
-              #:result (flatten (list (~a "I know an old lady who swallowed a " latest-animal ".")
-                                      latest-epithet
-                                      (if (empty? chain)
-                                          '()
-                                          (list chain final-line))))]
-             (#:break terminal? [predator (in-list subset)] [prey (in-list (rest subset))])
-             (~a "She swallowed the "
-                 (animal-name predator)
-                 " to catch the "
-                 (cond
-                   [(animal-exception prey)]
-                   [(animal-name prey)])
-                 ".")))
+
+  (for/lists
+   [chain
+    #:result (flatten (list (~a "I know an old lady who swallowed a " latest-animal ".")
+                            latest-epithet
+                            (if (empty? chain) '() (list chain final-line))))]
+   (#:break terminal? [predator (in-list subset)] [prey (in-list (rest subset))])
+    (~a "She swallowed the "
+        (animal-name predator)
+        " to catch the "
+        (cond [(animal-exception prey)] [(animal-name prey)])
+        ".")))
