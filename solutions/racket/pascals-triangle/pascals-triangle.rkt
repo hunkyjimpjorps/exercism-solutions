@@ -1,9 +1,13 @@
 #lang racket
-(require math/number-theory)
-
 (provide rows)
+
+(define (factorial n)
+  (for/product ([i n]) i))
+
+(define (combinations n k)
+  (/ (factorial n) (factorial k) (factorial (- n k))))
 
 (define (rows height)
   (for/list ([n (in-range 0 height)])
     (for/list ([k (in-inclusive-range 0 n)])
-      (binomial n k))))
+      (combinations n k))))
