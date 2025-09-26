@@ -13,5 +13,5 @@ function production_rate_per_hour(speed)
 end
 
 function working_items_per_minute(speed)
-    floor(Int, production_rate_per_hour(speed) / 60)
+    Int(production_rate_per_hour(speed) / 60)
 end
