@@ -3,7 +3,7 @@ function rank_range()
 end
 
 function file_range()
-    
+    'A':'H'
 end
 
 function ranks()
@@ -11,5 +11,5 @@ function ranks()
 end
 
 function files()
-    
+    collect(file_range())
 end
