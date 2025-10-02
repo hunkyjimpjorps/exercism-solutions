@@ -8,5 +8,5 @@ function get_treasure(password_attempt, chest)
 end
 
 function multiply_treasure(multiplier, chest)
-  TreasureChest(chest.password, repeat([chest.treasure], multiplier))
+  TreasureChest(chest.password, fill(chest.treasure, multiplier))
 end
