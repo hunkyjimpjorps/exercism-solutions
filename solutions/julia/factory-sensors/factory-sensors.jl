@@ -17,21 +17,21 @@ function machinemonitor(pct_humidity, temperature)
     try
         humiditycheck(pct_humidity)
     catch problem
+        machine_error = true
         if problem isa ErrorException
             @error "humidity level check failed: $pct_humidity%"
-            machine_error = true
+
         end
     end
 
     try
         temperaturecheck(temperature)
     catch problem
+        machine_error = true
         if problem isa ArgumentError
             @warn "sensor is broken"
-            machine_error = true
         elseif problem isa DomainError
             @error "overheating detected: $temperature °C"
-            machine_error = true
         end
     end
 
