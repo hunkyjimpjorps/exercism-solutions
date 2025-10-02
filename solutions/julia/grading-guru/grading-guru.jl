@@ -5,7 +5,7 @@ function demote(n)
 end
 
 function preprocess(coll)
-  coll isa Vector ? map(demote, reverse(coll)) :
-  coll isa Set ? sort(map(demote, collect(coll)), rev=true) :
+  coll isa Vector ? demote.(reverse(coll)) :
+  coll isa Set ? sort(demote.(collect(coll)), rev=true) :
   throw(MethodError(preprocess, (coll,)))
 end
